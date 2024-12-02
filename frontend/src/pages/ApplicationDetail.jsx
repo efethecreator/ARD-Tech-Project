@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-const ApplicationDetail = () => {
+const ApplicationDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -25,14 +25,12 @@ const ApplicationDetail = () => {
   const renderAttachment = (attachment) => {
     if (!attachment) return <p>Dosya yüklenmedi.</p>;
 
-    const fileExtension = attachment.split(".").pop().toLowerCase();
-
     return (
       <div className="mt-4">
         <p>Ekli Dosya:</p>
         <a
-          href={attachment}
-          download
+          href={`/${attachment}`} // Eğer dosya server üzerinden sunuluyorsa doğru path verilmeli
+          download={attachment.split("/").pop()}
           className="text-blue-500 underline hover:text-blue-700"
         >
           {attachment.split("/").pop()}
@@ -59,11 +57,7 @@ const ApplicationDetail = () => {
       <p>
         <strong>Açıklama:</strong> {application.description}
       </p>
-
-      <div>
-        <strong>Ekli Dosya:</strong>
-        {renderAttachment(application.attachment)}
-      </div>
+      {renderAttachment(application.attachment)}
 
       <button
         onClick={() => navigate(-1)}
@@ -75,4 +69,4 @@ const ApplicationDetail = () => {
   );
 };
 
-export default ApplicationDetail;
+export default ApplicationDetails;

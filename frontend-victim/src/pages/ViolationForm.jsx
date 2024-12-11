@@ -3,11 +3,19 @@ import axios from "axios";
 
 const ViolationForm = () => {
   const [formData, setFormData] = useState({
-    fullName: "",
-    tcNo: "",
-    violationType: "",
-    description: "",
-    file: null,
+    idNumber: "",
+    firstName: "",
+    lastName: "",
+    applicationPhone: "",
+    applicationEmail: "",
+    applicantType: "",
+    applicationReason: "",
+    applicationType: "",
+    companyName: "", // Opsiyonel alan
+    companyType: "", // Opsiyonel alan
+    status: "pending", // Varsayılan değer
+    file: null, // Dosya
+    resources: "", // Opsiyonel alan
   });
 
   const [error, setError] = useState("");
@@ -17,46 +25,98 @@ const ViolationForm = () => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "file") {
-      setFormData({ ...formData, file: files[0] });
+      setFormData((prevData) => ({
+        ...prevData,
+        file: files[0], // Dosya seçimi
+      }));
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value.trim(), // Diğer alanlar
+      }));
     }
+    console.log('Current form data:', formData); // Form verilerini loglama
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { fullName, tcNo, violationType, description, file } = formData;
-
-    if (!fullName || !tcNo || !violationType || !description) {
-      setError("Lütfen tüm alanları doldurun!");
+  
+    const {
+      idNumber,
+      firstName,
+      lastName,
+      applicationPhone,
+      applicationEmail,
+      applicantType,
+      applicationReason,
+      applicationType,
+      file,
+    } = formData;
+  
+    // Validation - Zorunlu alanlar
+    if (!idNumber || !firstName || !lastName || !applicationPhone || !applicationEmail || !applicantType || !applicationReason || !applicationType) {
+      setError("Lütfen tüm gerekli alanları doldurun!");
+      console.log('Validation failed. Missing fields:', formData);
       return;
     }
-
-    if (!/^\d{11}$/.test(tcNo)) {
+  
+    if (!/^\d{11}$/.test(idNumber)) {
       setError("TC Kimlik Numarası 11 haneli olmalıdır!");
+      console.log('Invalid TC number:', idNumber);
       return;
     }
-
+  
     if (file && file.size > 5 * 1024 * 1024) {
       setError("Dosya boyutu 5 MB'yi geçemez.");
+      console.log('File is too large:', file.size);
       return;
     }
-
+  
+    // FormData ile veri gönderimi
     const data = new FormData();
-    data.append("fullName", fullName);
-    data.append("tcNo", tcNo);
-    data.append("violationType", violationType);
-    data.append("description", description);
-    if (file) data.append("file", file);
-
+    data.append("idNumber", idNumber);
+    data.append("firstName", firstName);
+    data.append("lastName", lastName);
+    data.append("applicationPhone", applicationPhone);
+    data.append("applicationEmail", applicationEmail);
+    data.append("applicantType", applicantType);  // Zorunlu
+    data.append("applicationReason", applicationReason);  // Zorunlu
+    data.append("applicationType", applicationType);
+    if (file) data.append("file", file); // Dosya ekleniyor
+    if (formData.companyName) data.append("companyName", formData.companyName);  // Opsiyonel alan
+    if (formData.companyType) data.append("companyType", formData.companyType);  // Opsiyonel alan
+    if (formData.resources) data.append("resources", formData.resources);  // Opsiyonel alan
+  
+    console.log('FormData before submit:', data);
+  
     setIsSubmitting(true);
     try {
-      await axios.post("http://localhost:5000/api/violations", data);
+      const response = await axios.post("http://localhost:5000/api/applications", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",  // Dosya gönderimi için header
+        },
+      });
+  
       setSuccess("Başvurunuz başarıyla alındı.");
-      setFormData({ fullName: "", tcNo: "", violationType: "", description: "", file: null });
+      setFormData({
+        idNumber: "",
+        firstName: "",
+        lastName: "",
+        applicationPhone: "",
+        applicationEmail: "",
+        applicantType: "",
+        applicationReason: "",
+        applicationType: "",
+        companyName: "",
+        companyType: "",
+        status: "pending",
+        file: null,
+        resources: "",
+      });
       setError("");
     } catch (err) {
       setError(err.response?.data?.message || "Başvuru gönderilemedi. Lütfen tekrar deneyin.");
+      console.log('Error during submission:', err);
     } finally {
       setIsSubmitting(false);
     }
@@ -66,70 +126,118 @@ const ViolationForm = () => {
     <div className="flex items-center justify-center min-h-screen bg-[#F5F5F5] px-4 sm:px-6 lg:px-8">
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md sm:max-w-lg">
         <h2 className="text-2xl font-bold text-[#4B3020] mb-6 text-center">
-          Hak İhlali Başvuru Formu
+          Başvuru Formu
         </h2>
 
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         {success && <p className="text-green-500 text-sm mb-4">{success}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-[#4B3020] mb-1">Ad Soyad</label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6D4C30]"
-              placeholder="Adınızı ve soyadınızı girin"
-              required
-            />
-          </div>
+          {/* Zorunlu alanlar */}
           <div>
             <label className="block text-sm font-medium text-[#4B3020] mb-1">TC Kimlik Numarası</label>
             <input
               type="text"
-              name="tcNo"
-              value={formData.tcNo}
+              name="idNumber"
+              value={formData.idNumber}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6D4C30]"
               placeholder="TC Kimlik numaranızı girin"
               required
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#4B3020] mb-1">Ad</label>
+            <input
+              type="text"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6D4C30]"
+              placeholder="Adınızı girin"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#4B3020] mb-1">Soyad</label>
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6D4C30]"
+              placeholder="Soyadınızı girin"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#4B3020] mb-1">Telefon</label>
+            <input
+              type="text"
+              name="applicationPhone"
+              value={formData.applicationPhone}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6D4C30]"
+              placeholder="Telefon numaranızı girin"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#4B3020] mb-1">E-Posta</label>
+            <input
+              type="email"
+              name="applicationEmail"
+              value={formData.applicationEmail}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6D4C30]"
+              placeholder="E-posta adresinizi girin"
+              required
+            />
+          </div>
+
+          {/* Opsiyonel alanlar */}
+          <div>
+            <label className="block text-sm font-medium text-[#4B3020] mb-1">Şirket Adı</label>
+            <input
+              type="text"
+              name="companyName"
+              value={formData.companyName}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6D4C30]"
+              placeholder="Şirket adı (opsiyonel)"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#4B3020] mb-1">Şirket Türü</label>
+            <input
+              type="text"
+              name="companyType"
+              value={formData.companyType}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6D4C30]"
+              placeholder="Şirket türü (opsiyonel)"
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-[#4B3020] mb-1">Başvuru Türü</label>
             <select
-              name="violationType"
-              value={formData.violationType}
+              name="applicationType"
+              value={formData.applicationType}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6D4C30]"
               required
             >
-              <option value="">Bir tür seçin</option>
-              <option value="Ayrımcılık">Ayrımcılık</option>
-              <option value="Kadına Şiddet">Kadına Şiddet</option>
-              <option value="Yakınma">Yakınma</option>
-              <option value="İş Yerinde Taciz">İş Yerinde Taciz</option>
-              <option value="Siber Zorbalık">Siber Zorbalık</option>
-              <option value="Mobbing">Mobbing</option>
-              <option value="Taciz">Taciz</option>
-              <option value="İş Yerinde Ayrımcılık">İş Yerinde Ayrımcılık</option>
-              <option value="Diğer">Diğer</option>
+              <option value="personal">Bireysel</option>
+              <option value="corporate">Kurumsal</option>
             </select>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-[#4B3020] mb-1">Açıklama</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6D4C30]"
-              placeholder="Mağduriyetiniz hakkında bilgi verin"
-              rows="3"
-              required
-            />
-          </div>
+
           <div>
             <label className="block text-sm font-medium text-[#4B3020] mb-1">Dosya Yükle</label>
             <input
@@ -142,6 +250,19 @@ const ViolationForm = () => {
               <p className="text-sm text-gray-500 mt-1">Seçilen dosya: {formData.file.name}</p>
             )}
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-[#4B3020] mb-1">Kaynak URL</label>
+            <input
+              type="text"
+              name="resources"
+              value={formData.resources}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6D4C30]"
+              placeholder="Kaynak URL'sini girin (opsiyonel)"
+            />
+          </div>
+
           <button
             type="submit"
             disabled={isSubmitting}

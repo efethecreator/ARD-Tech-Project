@@ -1,0 +1,1 @@
+// case modeli oluşturulacak bu da application modela bağlanılacak controller yapılacak klasık backend 

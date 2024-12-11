@@ -1,0 +1,1 @@
+// hak ihlalleri model yapılacak tutulacak objectid ile applicationmodele bağlanacak 

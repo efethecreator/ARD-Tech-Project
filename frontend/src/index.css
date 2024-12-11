@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  @apply bg-secondary-light text-primary-dark;
+}

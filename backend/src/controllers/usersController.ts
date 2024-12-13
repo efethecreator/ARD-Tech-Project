@@ -19,6 +19,15 @@ export const getAdmins = async (req: Request, res: Response) => {
   }
 };
 
+export const getLawyers = async (req: Request, res: Response) => {
+  try {
+    const lawyers = await User.find({ userRole: "lawyer" });
+    res.status(200).json(lawyers);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching lawyers", error });
+  }
+}
+
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

@@ -4,6 +4,10 @@ export const getAllUsers = async () => {
   return await User.find();
 };
 
+export const getLawyers = async () => {
+  return await User.find({ userRole: "lawyer" });
+};
+
 export const getAdmins = async () => {
   return await User.find({ userRole: "admin" });
 };

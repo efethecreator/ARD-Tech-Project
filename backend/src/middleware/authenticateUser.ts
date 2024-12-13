@@ -11,7 +11,8 @@ export const authenticateUser = (req: Request, res: Response, next: NextFunction
   const token = req.cookies.auth_token;
 
   if (!token) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
+     res.status(401).json({ message: 'No token, authorization denied' });
+     return;
   }
 
   try {
@@ -23,6 +24,7 @@ export const authenticateUser = (req: Request, res: Response, next: NextFunction
 
     next();
   } catch (err) {
-    return res.status(401).json({ message: 'Token is not valid' });
+     res.status(401).json({ message: 'Token is not valid' });
+     return;
   }
 };

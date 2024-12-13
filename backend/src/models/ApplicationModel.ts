@@ -37,17 +37,20 @@ const ApplicationSchema = new Schema<IApplication>({
   companyName: { type: String, required: false },
   companyType: { type: String, required: false },
   status: { type: String, default: 'pending' },
-  files: [
+  files: { type: [
     {
-      fileKey: { type: String },
-      description: { type: String }
+        fileKey: { type: String },
+        description: { type: String  }
     }
-  ],
-  resources: [
-    {
+], default: [] },
+resources: { type: [
+  {
       url: { type: String, }
-    }
-  ]
+  }
+], default: [] }
+},
+{
+  timestamps: true
 });
 
 const ApplicationModel = model<IApplication>('Application', ApplicationSchema);

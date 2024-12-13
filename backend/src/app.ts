@@ -6,6 +6,8 @@ import authRoutes from './routes/auth.route'; // Auth rotalarını import ediyor
 import ApplicationRoutes from './routes/ApplicationRoutes'; // Başvuru işlemleri rotalarını import ediyoruz
 import cookieParser from 'cookie-parser'; // Cookie parsing için
 import cors from 'cors'; // CORS middleware
+import caseRoutes from './routes/caseRoutes';
+import violationRoutes from './routes/violationRoute';
 
 const app: Application = express(); // Express uygulamasını başlatıyoruz
 
@@ -29,6 +31,10 @@ app.use('/api/auth', authRoutes);
 
 // Kullanıcı işlemleri rotalarını /api/users endpointine bağlıyoruz
 app.use('/api/users', userRoutes);
+
+app.use('/api/cases', caseRoutes);
+
+app.use('/api/violations', violationRoutes);
 
 
 

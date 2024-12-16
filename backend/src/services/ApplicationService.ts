@@ -14,7 +14,10 @@ class ApplicationService {
     return await ApplicationModel.findById(id);
   }
 
-  async updateApplication(id: string, data: Partial<IApplication>): Promise<IApplication | null> {
+  async updateApplication(
+    id: string,
+    data: Partial<IApplication>
+  ): Promise<IApplication | null> {
     return await ApplicationModel.findByIdAndUpdate(id, data, { new: true });
   }
 
@@ -29,6 +32,12 @@ class ApplicationService {
   async getApplicationsByType(type: string): Promise<IApplication[]> {
     return await ApplicationModel.find({ applicantType: type });
   }
+
+  async addViolation(violation: Partial<IApplication>): Promise<IApplication> {
+    const application = new ApplicationModel(violation);
+    return await application.save();
+  }
+  
 }
 
 export default new ApplicationService();

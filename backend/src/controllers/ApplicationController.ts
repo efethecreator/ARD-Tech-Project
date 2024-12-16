@@ -176,6 +176,20 @@ class ApplicationController {
       res.status(500).json({ message: error.message });
     }
   };
+
+  addViolation: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const violation = await ApplicationService.addViolation(req.body);
+      if (!violation) {
+        res.status(404).json({ message: "Application not found" });
+        return;
+      }
+      res.status(200).json(violation);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
 }
 
 export default new ApplicationController();

@@ -87,12 +87,18 @@ export const login = async (req: Request, res: Response) => {
     const token = jwt.sign({ id: user._id, role: user.userRole }, JWT_SECRET, {
       expiresIn: "1d",
     });
-
     // Cookie'ye token yaz
     res.cookie("token", token, { httpOnly: true });
-
     res.status(200).json({ message: "Login successful", token });
   } catch (error) {
     res.status(500).json({ message: "Error logging in", error });
   }
+  
+};
+
+export const logout = (req: Request, res: Response) => {
+  // Clear the authentication cookie
+  res.cookie('token', '', { httpOnly: true, expires: new Date(0) });
+
+  res.status(200).json({ message: "Logged out successfully" });
 };

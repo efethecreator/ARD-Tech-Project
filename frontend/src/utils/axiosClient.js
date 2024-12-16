@@ -5,6 +5,7 @@ const axiosClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true // CORS sırasında kimlik bilgilerini göndermek için
 });
 
 export default axiosClient;

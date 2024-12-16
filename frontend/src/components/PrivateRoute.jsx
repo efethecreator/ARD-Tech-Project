@@ -1,9 +1,10 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
+import useAuthStore from "../store/authStore";
 
 const PrivateRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  const token = useAuthStore((state) => state.token);
+  return token ? children : <Navigate to="/login" />;
 };
 
 export default PrivateRoute;

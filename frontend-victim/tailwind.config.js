@@ -7,14 +7,13 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          light: '#8B5E3C',
-          DEFAULT: '#6D4C30',
-          dark: '#4B3020',
+          DEFAULT: '#2C3E50', // Derin ve muted bir mavi (arka plan için)
         },
         secondary: {
-          light: '#E6D2C0',
-          DEFAULT: '#D3B8A8',
-          dark: '#A38274',
+          DEFAULT: '#E74C3C', // Canlı bir coral (butonlar ve vurgular için)
+        },
+        accent: {
+          DEFAULT: '#ECF0F1', // Yumuşak gri (form arka planı için)
         },
       },
     },

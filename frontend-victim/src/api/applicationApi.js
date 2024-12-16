@@ -1,10 +1,12 @@
-import axiosClient from './axiosClient';
+import applicationApi from "../api/applicationApi";
 
-const applicationApi = {
-  create: (data) => axiosClient.post('/applications', data), // Backend'e veri gönderiliyor
-  getAll: () => axiosClient.get('/applications'),
-  update: (id, data) => axiosClient.put(`/applications/${id}`, data),
-  delete: (id) => axiosClient.delete(`/applications/${id}`),
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  // ...
+  try {
+    const response = await applicationApi.createApplication(data);
+    setSuccess("Başvurunuz başarıyla alındı.");
+  } catch (err) {
+    setError(err.response?.data?.message || "Başvuru gönderilemedi. Lütfen tekrar deneyin.");
+  }
 };
-
-export default applicationApi;

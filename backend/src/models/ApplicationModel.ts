@@ -44,7 +44,6 @@ const ApplicationSchema = new Schema<IApplication>(
       type: [
         {
           fileKey: { type: String },
-          description: { type: String },
         },
       ],
       default: [],

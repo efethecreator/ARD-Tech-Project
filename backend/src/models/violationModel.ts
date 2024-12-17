@@ -20,22 +20,22 @@ export interface IViolation {
 }
 
 const ViolationSchema = new Schema<IViolation>({
-    category: { type: String, required: false },
-    scanPeriod: { type: String, required: false },
-    eventCategory: { type: String, required: false },
-    eventSummary: { type: String, required: false },
-    source: { type: String, required: false },
-    link: { type: String, required: false },
-    visualLink: { type: String, required: false },
+    category: { type: String, default: "" },
+    scanPeriod: { type: String, default: "" },
+    eventCategory: { type: String, default: "" },
+    eventSummary: { type: String, default: "" },
+    source: { type: String, default: "" },
+    link: { type: String, default: "" },
+    visualLink: { type: String, default: "" },
     files: { type: [
         {
             fileKey: { type: String },
             description: { type: String  }
         }
     ], default: [] },
-    notificationInstitution: { type: String, required: false },
-    commissionCase: { type: String, required: false },
-    publicInstitution: { type: String, required: false },
+    notificationInstitution: { type: String, default: "" },
+    commissionCase: { type: String, default: "" },
+    publicInstitution: { type: String, default: "" },
 },
 {
     timestamps: true

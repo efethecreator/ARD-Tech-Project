@@ -4,9 +4,10 @@ import Dashboard from "./pages/Dashboard";
 import ApplicationList from "./pages/ApplicationList";
 import ApplicationForm from "./pages/ApplicationForm";
 import CaseList from "./pages/CaseList";
-import CaseForm from "./pages/CaseForm"; // Yeni dava ekleme sayfası
+import CaseForm from "./pages/CaseForm";
 import LawyerList from "./pages/LawyerList";
 import MediaTracking from "./pages/MediaTracking";
+import AddViolation from "./pages/AddViolation"; // Yeni eklenen dosya
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Sidebar from "./components/Sidebar";
@@ -53,6 +54,10 @@ const App = () => {
                       path="/media-tracking"
                       element={<MediaTracking />}
                     />
+                    <Route
+                      path="/violations/add"
+                      element={<AddViolation />}
+                    />
                   </Routes>
                 </div>
               </div>
@@ -65,4 +70,3 @@ const App = () => {
 };
 
 export default App;
-  

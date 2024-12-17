@@ -1,9 +1,8 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:5000/api", // Backend URL
-  withCredentials: true, // Kimlik bilgileri için
+  baseURL: "http://localhost:5000/api", // Backend URL, doğru şekilde ayarlanmalı
+  withCredentials: true, // Eğer kimlik doğrulama gerektiriyorsa
 });
 
-// Dosya yükleme sırasında Content-Type ayarını kaldırın!
 export default axiosClient;

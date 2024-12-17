@@ -16,6 +16,7 @@ const MediaTracking = () => {
     const fetchViolations = async () => {
       try {
         const response = await violationApi.getAllViolations();
+        console.log("Hak İhlalleri API Yanıtı:", response.data); // Gelen veriyi kontrol et
         setViolations(response.data);
         setFilteredViolations(response.data);
       } catch (error) {
@@ -34,6 +35,7 @@ const MediaTracking = () => {
       violation.eventSummary?.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredViolations(filtered);
+    setCurrentPage(1);
   };
 
   // Filtreleme Fonksiyonu
@@ -46,6 +48,7 @@ const MediaTracking = () => {
     } else {
       setFilteredViolations(violations);
     }
+    setCurrentPage(1);
   };
 
   // Sayfalama İçin Veriyi Dilimle
@@ -108,52 +111,33 @@ const MediaTracking = () => {
           <tbody className="bg-white">
             {paginatedViolations.length > 0 ? (
               paginatedViolations.map((violation, index) => (
-                <tr
-                  key={violation._id}
-                  className="hover:bg-[#f5f5f5] transition"
-                >
-                  <td className="border border-gray-300 px-4 py-2 text-center">
+                <tr key={violation._id} className="hover:bg-[#f5f5f5] transition">
+                  <td className="border px-4 py-2 text-center">
                     {(currentPage - 1) * itemsPerPage + index + 1}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {violation.scanPeriod || "N/A"}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {violation.category || "N/A"}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {violation.eventSummary || "N/A"}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {violation.source || "N/A"}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border px-4 py-2">{violation.scanPeriod || "N/A"}</td>
+                  <td className="border px-4 py-2">{violation.category || "N/A"}</td>
+                  <td className="border px-4 py-2">{violation.eventSummary || "N/A"}</td>
+                  <td className="border px-4 py-2">{violation.source || "N/A"}</td>
+                  <td className="border px-4 py-2 text-center">
                     {violation.visualLink ? (
-                      <a
-                        href={violation.visualLink}
-                        target="_blank"
-                        className="text-blue-600 hover:underline"
-                      >
+                      <a href={violation.visualLink} target="_blank" rel="noreferrer" className="text-blue-600 underline">
                         Görsel
                       </a>
                     ) : (
                       "N/A"
                     )}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border px-4 py-2 text-center">
                     {violation.files?.[0]?.fileKey ? (
-                      <a
-                        href={violation.files[0].fileKey}
-                        target="_blank"
-                        className="text-blue-600 hover:underline"
-                      >
+                      <a href={violation.files[0].fileKey} target="_blank" rel="noreferrer" className="text-blue-600 underline">
                         Dosya
                       </a>
                     ) : (
                       "N/A"
                     )}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">
+                  <td className="border px-4 py-2 text-center">
                     <button
                       onClick={() => navigate(`/violations/${violation._id}`)}
                       className="bg-[#8d6e63] text-white px-3 py-1 rounded hover:bg-[#6d4c41] transition"
@@ -165,11 +149,8 @@ const MediaTracking = () => {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="8"
-                  className="border px-4 py-2 text-center text-gray-500"
-                >
-                  Henüz hak ihlali kaydı bulunmamaktadır.
+                <td colSpan="8" className="border px-4 py-2 text-center text-gray-500">
+                  Hak ihlali kaydı bulunmamaktadır.
                 </td>
               </tr>
             )}
@@ -185,11 +166,7 @@ const MediaTracking = () => {
           <button
             key={i}
             onClick={() => setCurrentPage(i + 1)}
-            className={`mx-1 px-3 py-1 rounded transition ${
-              currentPage === i + 1
-                ? "bg-[#6d4c41] text-white"
-                : "bg-gray-300 hover:bg-gray-400"
-            }`}
+            className={`mx-1 px-3 py-1 rounded transition ${currentPage === i + 1 ? "bg-[#6d4c41] text-white" : "bg-gray-300 hover:bg-gray-400"}`}
           >
             {i + 1}
           </button>

@@ -33,9 +33,12 @@ class ApplicationService {
     return await ApplicationModel.find({ applicantType: type });
   }
 
-  async addViolation(violation: Partial<IApplication>): Promise<IApplication> {
-    const application = new ApplicationModel(violation);
-    return await application.save();
+  async addViolation(applicationId: string, violationId: string): Promise<IApplication | null> {
+    return await ApplicationModel.findByIdAndUpdate(
+      applicationId,
+      { $set: { violationId: violationId } },
+      { new: true }
+    );
   }
   
 }

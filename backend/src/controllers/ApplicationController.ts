@@ -1,5 +1,5 @@
 import { Request, Response, RequestHandler } from "express";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import ApplicationService from "../services/ApplicationService";
 import { uploadFileS3 } from "../services/aws3service"; // Assuming this is the path to your S3 upload function
 
@@ -25,14 +25,16 @@ class ApplicationController {
       // Append file information to formData
       formData.files = {
         fileKey: uploadedFileKey,
-        description: "File uploaded for application"
+        description: "File uploaded for application",
       };
 
       // Save application with file information
-      const savedApplication = await ApplicationService.createApplication(formData);
+      const savedApplication = await ApplicationService.createApplication(
+        formData
+      );
       res.status(201).json({
         message: "Application created successfully",
-        data: savedApplication
+        data: savedApplication,
       });
     } catch (error: any) {
       console.error("Error creating application:", error);
@@ -177,19 +179,37 @@ class ApplicationController {
     }
   };
 
-  addViolation: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+  addViolation: RequestHandler = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
     try {
-      const violation = await ApplicationService.addViolation(req.body);
-      if (!violation) {
-        res.status(404).json({ message: "Application not found" });
+      const applicationId = req.params.id;
+      const { violationId } = req.body; // `violationId`'yi request body'den alın
+
+      const updatedApplication = await ApplicationService.addViolation(
+        applicationId,
+        violationId
+      );
+
+      if (!updatedApplication) {
+        res
+          .status(404)
+          .json({
+            message: "Application not found or violationId not provided",
+          });
         return;
       }
-      res.status(200).json(violation);
+      res
+        .status(200)
+        .json({
+          message: "Violation added successfully",
+          data: updatedApplication,
+        });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
   };
-
 }
 
 export default new ApplicationController();

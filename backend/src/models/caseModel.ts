@@ -1,11 +1,11 @@
-import { Schema, model, Document } from 'mongoose';
+import mongoose, { Schema, model, Document, mongo } from 'mongoose';
 
 export interface ICase extends Document {
-    applicationId: string;
+    applicationId: mongoose.Schema.Types.ObjectId;
     protectedPersonName: string;
     protectedPersonSurname: string;
     protectedPersonTCNumber: Number;
-    lawyerId: string;
+    lawyerId: mongoose.Schema.Types.ObjectId;
     caseNumber: number;
     caseReason: string;
     courtName: string;
@@ -26,11 +26,11 @@ export interface ICase extends Document {
 }
 
 const CaseSchema = new Schema<ICase>({
-    applicationId: { type: String, required: true },
+    applicationId: { type: mongoose.Schema.Types.ObjectId, required: false, ref: "Application", default: null },
     protectedPersonName: { type: String, default: "" },
     protectedPersonSurname: { type: String, default: "" },
     protectedPersonTCNumber: { type: Number, default: 0 },
-    lawyerId: { type: String, required: true },
+    lawyerId: { type: mongoose.Schema.Types.ObjectId, required: false, ref: "User", default: null },
     caseNumber: { type: Number, default: 0 },
     caseReason: { type: String, default: "" },
     courtName: { type: String, default: "" },

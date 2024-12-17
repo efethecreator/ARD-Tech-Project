@@ -17,7 +17,6 @@ export interface IViolation {
     notificationInstitution?: string;
     commissionCase?: string;
     publicInstitution?: string;
-    applicationId: string;
 }
 
 const ViolationSchema = new Schema<IViolation>({
@@ -37,7 +36,6 @@ const ViolationSchema = new Schema<IViolation>({
     notificationInstitution: { type: String, required: false },
     commissionCase: { type: String, required: false },
     publicInstitution: { type: String, required: false },
-    applicationId: { type: String, required: true },
 },
 {
     timestamps: true

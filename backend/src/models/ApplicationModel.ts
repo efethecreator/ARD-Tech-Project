@@ -23,6 +23,7 @@ export interface IApplication extends Document {
       url: string;
     }
   ];
+  caseId?: mongoose.Schema.Types.ObjectId;
   violationId?: mongoose.Schema.Types.ObjectId;
 }
 
@@ -56,7 +57,8 @@ const ApplicationSchema = new Schema<IApplication>(
       ],
       default: [],
     },
-    violationId: { type: mongoose.Schema.Types.ObjectId, ref: "Violation" },
+    violationId: { type: mongoose.Schema.Types.ObjectId, ref: "Violation", required: false },
+    caseId: { type: mongoose.Schema.Types.ObjectId, ref: "Case", required: false },
   },
   {
     timestamps: true,

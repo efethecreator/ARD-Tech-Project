@@ -2,8 +2,8 @@ import { create } from "zustand";
 import { login } from "../api/authApi";
 
 const useAuthStore = create((set) => ({
-  isAuthenticated: false,
-  token: null,
+  isAuthenticated: !!localStorage.getItem("token"), // Başlangıç durumu
+  token: localStorage.getItem("token"), // Token varsa yükle
   error: null,
 
   loginUser: async (TCNumber, password) => {

@@ -4,15 +4,29 @@ import applicationApi from "../api/applicationApi";
 const useApplicationStore = create((set) => ({
   applications: [],
   fetchApplications: async () => {
-    const response = await applicationApi.getAll();
-    set({ applications: response.data });
+    try {
+      const response = await applicationApi.getAll();
+      set({ applications: response.data });
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+    }
   },
   createApplication: async (data) => {
-    await applicationApi.create(data);
+    try {
+      return await applicationApi.createApplication(data);
+    } catch (error) {
+      console.error("Error creating application:", error);
+      throw error;
+    }
   },
   deleteApplication: async (id) => {
-    await applicationApi.delete(id);
+    try {
+      await applicationApi.delete(id);
+    } catch (error) {
+      console.error("Error deleting application:", error);
+    }
   },
 }));
 
 export default useApplicationStore;
+

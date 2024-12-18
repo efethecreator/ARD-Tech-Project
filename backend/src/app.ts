@@ -19,7 +19,7 @@ app.use(express.json());
 
 // CORS middleware
 app.use(cors({
-  origin: 'http://localhost:5173', // Frontend sunucunuzun URL'si
+  origin: ['http://localhost:5173', 'http://localhost:5174'], 
   credentials: true
 }));
 // Cookie parsing middleware

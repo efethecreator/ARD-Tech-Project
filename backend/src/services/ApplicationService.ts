@@ -33,14 +33,16 @@ class ApplicationService {
     return await ApplicationModel.find({ applicantType: type });
   }
 
-  async addViolation(applicationId: string, violationId: string): Promise<IApplication | null> {
+  async addViolation(
+    applicationId: string,
+    violationId: string
+  ): Promise<IApplication | null> {
     return await ApplicationModel.findByIdAndUpdate(
       applicationId,
-      { $set: { violationId: violationId } },
+      { $set: { violationId } },
       { new: true }
     );
   }
-  
 }
 
 export default new ApplicationService();

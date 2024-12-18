@@ -10,7 +10,7 @@ class ApplicationController {
   ): Promise<void> => {
     try {
       const formData = req.body;
-      const file = req.file;
+      const file = req.body.file;
       if (!file) {
         res.status(400).json({ message: "File is required" });
         return;
@@ -179,13 +179,10 @@ class ApplicationController {
     }
   };
 
-  addViolation: RequestHandler = async (
-    req: Request,
-    res: Response
-  ): Promise<void> => {
+  addViolation: RequestHandler = async (req: Request, res: Response) => {
     try {
       const applicationId = req.params.id;
-      const { violationId } = req.body; // `violationId`'yi request body'den alın
+      const { violationId } = req.body;
 
       const updatedApplication = await ApplicationService.addViolation(
         applicationId,
@@ -193,19 +190,14 @@ class ApplicationController {
       );
 
       if (!updatedApplication) {
-        res
-          .status(404)
-          .json({
-            message: "Application not found or violationId not provided",
-          });
+        res.status(404).json({ message: "Application or Violation not found" });
         return;
       }
-      res
-        .status(200)
-        .json({
-          message: "Violation added successfully",
-          data: updatedApplication,
-        });
+
+      res.status(200).json({
+        message: "Violation added successfully",
+        data: updatedApplication,
+      });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

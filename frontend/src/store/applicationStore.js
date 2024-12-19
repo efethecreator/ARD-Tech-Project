@@ -30,4 +30,3 @@ const useApplicationStore = create((set) => ({
 }));
 
 export default useApplicationStore;
-

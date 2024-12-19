@@ -22,16 +22,13 @@ const ApplicationsPage = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleInputChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: files ? files[0] : value, // files[0] ile dosya değeri ayarlanıyor
-    });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
-  
 
-  const handleNextStep = () => setCurrentStep((prev) => prev + 1);
-  const handlePreviousStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
 
   const validateForm = () => {
     const errors = {};
@@ -54,8 +51,18 @@ const ApplicationsPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-  
+
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setErrorMessage(errors);
+      setSuccessMessage("");
+      return;
+    }
+
+    const data = new FormData();
+    Object.keys(formData).forEach((key) => data.append(key, formData[key]));
+    data.append("file", file);
+
     try {
       await createApplication(data); // Backend'e başvuru gönderme
       setSuccessMessage("Başvuru başarıyla gönderildi!");
@@ -71,17 +78,13 @@ const ApplicationsPage = () => {
         applicationType: "",
         companyName: "",
         companyType: "",
-        file: null,
       });
-      setCurrentStep(1);
+      setFile(null);
     } catch (error) {
-      console.error("Form gönderimi sırasında hata oluştu:", error);
-      alert(error.response?.data?.message || "Bir hata oluştu. Lütfen tekrar deneyin.");
-    } finally {
-      setLoading(false);
+      setErrorMessage({ general: "Başvuru gönderilirken bir hata oluştu." });
+      setSuccessMessage("");
     }
   };
-  
 
   return (
     <div className="min-h-screen bg-primary flex items-center justify-center py-10 px-4">
@@ -161,4 +164,4 @@ const ApplicationsPage = () => {
   );
 };
 
-export default ApplicationPage;
+export default ApplicationsPage;

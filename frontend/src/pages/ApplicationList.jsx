@@ -94,11 +94,13 @@ const ApplicationList = () => {
   };
 
   const handleFileChange = (e) => {
-    setFile(e.target.file[0]);
+    setFile(e.target.files[0]); // files[0] ile seçilen dosyayı al
   };
-  const handleFile2Change = (e) => {
-    setFormData({ ...formData, file: e.target.file[0] });
-  };
+  
+const handleFile2Change = (e) => {
+  setFormData({ ...formData, file: e.target.files[0] }); // files[0] ile seçilen dosyayı formData'ya ekle
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

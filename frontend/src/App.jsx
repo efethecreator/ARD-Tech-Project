@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import ApplicationList from "./pages/ApplicationList";
 import ApplicationForm from "./pages/ApplicationForm";
+import ApplicationDetail from "./pages/ApplicationDetailPage"; // Detay sayfası
 import CaseList from "./pages/CaseList";
 import CaseForm from "./pages/CaseForm";
 import LawyerList from "./pages/LawyerList";
@@ -47,17 +48,15 @@ const App = () => {
                       path="/applications/new"
                       element={<ApplicationForm />}
                     />
+                    <Route
+                      path="/applications/:id"
+                      element={<ApplicationDetail />} // Başvuru detay sayfası
+                    />
                     <Route path="/cases" element={<CaseList />} />
                     <Route path="/cases/new" element={<CaseForm />} />
                     <Route path="/lawyers" element={<LawyerList />} />
-                    <Route
-                      path="/media-tracking"
-                      element={<MediaTracking />}
-                    />
-                    <Route
-                      path="/violations/add"
-                      element={<AddViolation />}
-                    />
+                    <Route path="/media-tracking" element={<MediaTracking />} />
+                    <Route path="/violations/add" element={<AddViolation />} />
                   </Routes>
                 </div>
               </div>

@@ -25,9 +25,9 @@ const ApplicationList = () => {
     applicationType: "",
     companyName: "",
     companyType: "",
+    file: null,
   });
   const [loading, setLoading] = useState(false);
-  const [file, setFile] = useState(null);
 
   const openApplicationDetail = (id) => {
     // Başvurunun detay sayfasına yönlendir
@@ -42,7 +42,7 @@ const ApplicationList = () => {
       "source",
       "link",
       "visualLink",
-      "file",
+      "files",
     ],
     "NGO Data": [
       "scanPeriod",
@@ -50,7 +50,7 @@ const ApplicationList = () => {
       "eventSummary",
       "notificationInstitution",
       "link",
-      "file",
+      "files",
     ],
     "Bar Committees": [
       "scanPeriod",
@@ -58,7 +58,7 @@ const ApplicationList = () => {
       "eventSummary",
       "commissionCase",
       "link",
-      "file",
+      "files",
     ],
     "Public Institutions": [
       "scanPeriod",
@@ -66,15 +66,15 @@ const ApplicationList = () => {
       "eventSummary",
       "publicInstitution",
       "link",
-      "file",
+      "files",
     ],
   };
 
   const handleChange = (e) => {
-    const { name, value, file } = e.target;
+    const { name, value, files } = e.target;
     setFormData({
       ...formData,
-      [name]: file ? file[0] : value,
+      [name]: files ? files[0] : value,
     });
   };
 
@@ -94,10 +94,7 @@ const ApplicationList = () => {
   };
 
   const handleFileChange = (e) => {
-    setFile(e.target.file[0]);
-  };
-  const handleFile2Change = (e) => {
-    setFormData({ ...formData, file: e.target.file[0] });
+    setFormData({ ...formData, file: e.target.files[0] });
   };
 
   const handleSubmit = async (e) => {
@@ -140,38 +137,26 @@ const ApplicationList = () => {
     setCurrentStep((prevStep) => (prevStep > 1 ? prevStep - 1 : 1));
   };
 
-  const handleFinalSubmit = async (e) => {
+  const handleFinalSubmit = async () => {
     setLoading(true);
-    e.preventDefault();
-
-    const data = new FormData();
-
-    // Append all form data fields to FormData
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
-
-    // Append the file to FormData
-    if (file) {
-      data.append("file", file);
-    }
-
     try {
-      // 1. Step: Create application
-      const applicationResponse = await applicationApi.createApplication(data);
+      // 1. Adım: Başvuru oluştur
+      const applicationResponse = await applicationApi.createApplication(
+        formData
+      );
       console.log("Application Response:", applicationResponse);
 
-      // Get application ID from the response
+      // Gelen yanıtın iç yapısını kontrol edin
       const applicationId = applicationResponse?.data?.data?._id;
       if (!applicationId) {
         console.error("Application Response Error:", applicationResponse);
         throw new Error("Başvuru oluşturulamadı. Application ID alınamadı.");
       }
 
-      // 2. Step: Create violation
+      // 2. Adım: Violation oluştur
       const violationData = {
         category,
-        scanPeriod: formData.scanPeriod || "", // Default value can be set
+        scanPeriod: formData.scanPeriod || "", // Varsayılan değer atanabilir
         eventCategory: formData.eventCategory || "",
         eventSummary: formData.eventSummary || "",
         source: formData.source || "",
@@ -182,12 +167,12 @@ const ApplicationList = () => {
         publicInstitution: formData.publicInstitution || "",
       };
 
-      console.log("Violation data:", violationData);
+      console.log("Violation için gönderilen data:", violationData);
 
       const violationResponse = await applicationApi.createViolation(
         violationData
       );
-      console.log("Violation API response:", violationResponse);
+      console.log("Violation API yanıtı:", violationResponse);
 
       const violationId = violationResponse?.data?._id;
       if (!violationId) {
@@ -195,9 +180,9 @@ const ApplicationList = () => {
         throw new Error("Violation oluşturulurken hata oluştu.");
       }
 
-      // 3. Step: Add violation to application
+      // 3. Adım: Başvuruya Violation ekle
       await applicationApi.addViolation(applicationId, { violationId });
-      console.log("Violation successfully added.");
+      console.log("Violation Başarıyla Eklendi.");
 
       alert("Başvuru ve Violation başarıyla kaydedildi!");
       closePopup();
@@ -209,66 +194,6 @@ const ApplicationList = () => {
       setLoading(false);
     }
   };
-
-  // const handleFinalSubmit = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const data = new FormData();
-  //     Object.keys(formData).forEach((key) => data.append(key, formData[key]));
-  //     data.append("file", file);
-
-  //     // 1. Adım: Başvuru oluştur
-  //     const applicationResponse = await applicationApi.createApplication(data);
-  //     console.log("Application Response:", applicationResponse);
-
-  //     // Gelen yanıtın iç yapısını kontrol edin
-  //     const applicationId = applicationResponse?.data?.data?._id;
-  //     if (!applicationId) {
-  //       console.error("Application Response Error:", applicationResponse);
-  //       throw new Error("Başvuru oluşturulamadı. Application ID alınamadı.");
-  //     }
-
-  //     // 2. Adım: Violation oluştur
-  //     const violationData = {
-  //       category,
-  //       scanPeriod: formData.scanPeriod || "", // Varsayılan değer atanabilir
-  //       eventCategory: formData.eventCategory || "",
-  //       eventSummary: formData.eventSummary || "",
-  //       source: formData.source || "",
-  //       link: formData.link || "",
-  //       visualLink: formData.visualLink || "",
-  //       notificationInstitution: formData.notificationInstitution || "",
-  //       commissionCase: formData.commissionCase || "",
-  //       publicInstitution: formData.publicInstitution || "",
-  //     };
-
-  //     console.log("Violation için gönderilen data:", violationData);
-
-  //     const violationResponse = await applicationApi.createViolation(
-  //       violationData
-  //     );
-  //     console.log("Violation API yanıtı:", violationResponse);
-
-  //     const violationId = violationResponse?.data?._id;
-  //     if (!violationId) {
-  //       console.error("Violation Response Error:", violationResponse);
-  //       throw new Error("Violation oluşturulurken hata oluştu.");
-  //     }
-
-  //     // 3. Adım: Başvuruya Violation ekle
-  //     await applicationApi.addViolation(applicationId, { violationId });
-  //     console.log("Violation Başarıyla Eklendi.");
-
-  //     alert("Başvuru ve Violation başarıyla kaydedildi!");
-  //     closePopup();
-  //     fetchApplications();
-  //   } catch (error) {
-  //     console.error("Error during submission:", error);
-  //     alert(error.message || "Bir hata oluştu. Lütfen tekrar deneyin.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -434,7 +359,6 @@ const ApplicationList = () => {
                           <label className="block text-sm font-medium text-gray-700">
                             {
                               {
-                                scanPeriod: "Scan Period",
                                 eventCategory: "Event Category",
                                 eventSummary: "Event Summary",
                                 source: "Source",
@@ -444,16 +368,16 @@ const ApplicationList = () => {
                                   "Notification Institution",
                                 commissionCase: "Commission Case",
                                 publicInstitution: "Public Institution",
-                                file: "Upload File",
+                                files: "Upload File",
                               }[field]
                             }
                           </label>
                           <input
-                            type={field === "file" ? "file" : "text"}
+                            type={field === "files" ? "file" : "text"}
                             name={field}
                             onChange={handleChange}
                             className="border p-2 rounded w-full"
-                            required={field !== "file"}
+                            required={field !== "files"}
                           />
                         </div>
                       ))}

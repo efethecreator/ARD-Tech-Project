@@ -13,6 +13,7 @@ const useApplicationStore = create((set) => ({
   },
   createApplication: async (data) => {
     try {
+      console.log("Application data:", data);
       return await applicationApi.createApplication(data);
     } catch (error) {
       console.error("Error creating application:", error);

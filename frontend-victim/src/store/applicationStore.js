@@ -1,19 +1,14 @@
 import { create } from "zustand";
 import applicationApi from "../api/applicationApi";
 
-const useApplicationStore = create((set) => ({
+export const useApplicationStore = create((set) => ({
   applications: [],
-
-  // Tüm başvuruları getirme
-  fetchApplications: async () => {
+  createApplication: async (data) => {
     try {
-      const response = await applicationApi.getAll();
-      set({ applications: response.data });
+      return await applicationApi.createApplication(data);
     } catch (error) {
-      console.error(
-        "Başvurular getirilirken hata oluştu:",
-        error.response?.data || error.message
-      );
+      console.error("Error creating application:", error);
+      throw error;
     }
   },
 

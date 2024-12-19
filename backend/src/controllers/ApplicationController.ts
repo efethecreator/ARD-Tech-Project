@@ -10,7 +10,7 @@ class ApplicationController {
   ): Promise<void> => {
     try {
       const formData = req.body;
-      const file = req.body.file;
+      const file = req.file;
       if (!file) {
         res.status(400).json({ message: "File is required" });
         return;

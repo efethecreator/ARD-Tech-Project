@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import useApplicationStore from "../store/applicationStore";
+import { useApplicationStore } from "../store/applicationStore";
 
-const ApplicationPage = () => {
+const ApplicationsPage = () => {
   const { createApplication } = useApplicationStore();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     idNumber: "",
@@ -19,6 +17,9 @@ const ApplicationPage = () => {
     companyType: "",
     file: null,
   });
+  const [file, setFile] = useState(null);
+  const [errorMessage, setErrorMessage] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
@@ -32,12 +33,23 @@ const ApplicationPage = () => {
   const handleNextStep = () => setCurrentStep((prev) => prev + 1);
   const handlePreviousStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
 
-  const handleNextStepWithFileCheck = () => {
-    if (!formData.file) {
-      alert("Lütfen bir dosya yükleyin!");
-      return;
-    }
-    setCurrentStep(3);
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.idNumber) errors.idNumber = "TC Kimlik Numarası zorunludur.";
+    if (!formData.firstName) errors.firstName = "Ad zorunludur.";
+    if (!formData.lastName) errors.lastName = "Soyad zorunludur.";
+    if (!formData.applicationPhone)
+      errors.applicationPhone = "Telefon numarası zorunludur.";
+    if (!formData.applicationEmail)
+      errors.applicationEmail = "E-posta adresi zorunludur.";
+    if (!formData.applicantType)
+      errors.applicantType = "Başvuran türü zorunludur.";
+    if (!formData.applicationReason)
+      errors.applicationReason = "Başvuru nedeni zorunludur.";
+    if (!formData.applicationType)
+      errors.applicationType = "Başvuru tipi zorunludur.";
+    if (!file) errors.file = "Bir dosya yüklemek zorunludur.";
+    return errors;
   };
 
   const handleSubmit = async (e) => {
@@ -45,17 +57,9 @@ const ApplicationPage = () => {
     setLoading(true);
   
     try {
-      const applicationData = new FormData();
-      Object.keys(formData).forEach((key) => {
-        if (formData[key]) {
-          applicationData.append(key, formData[key]);
-        }
-      });
-  
-      console.log("Gönderilen FormData:", [...applicationData.entries()]); // Debug için
-      await createApplication(applicationData);
-  
-      alert("Form başarıyla gönderildi!");
+      await createApplication(data); // Backend'e başvuru gönderme
+      setSuccessMessage("Başvuru başarıyla gönderildi!");
+      setErrorMessage({});
       setFormData({
         idNumber: "",
         firstName: "",
@@ -80,108 +84,78 @@ const ApplicationPage = () => {
   
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        {currentStep === 1 && (
-          <div>
-            <h2 className="text-xl font-bold mb-4 text-center">Başvuru Ekle - Adım 1</h2>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleNextStep();
-              }}
-              className="space-y-4"
-            >
-              {["idNumber", "firstName", "lastName", "applicationPhone", "applicationEmail"].map(
-                (field, idx) => (
-                  <div key={idx}>
-                    <label className="block mb-1 font-medium">
-                      {field === "idNumber"
-                        ? "TC Kimlik Numarası"
-                        : field === "firstName"
-                        ? "Ad"
-                        : field === "lastName"
-                        ? "Soyad"
-                        : field === "applicationPhone"
-                        ? "Telefon"
-                        : "E-posta"}
-                    </label>
-                    <input
-                      type={field === "applicationEmail" ? "email" : "text"}
-                      name={field}
-                      value={formData[field]}
-                      onChange={handleInputChange}
-                      className="w-full border p-2 rounded"
-                      placeholder={`${field} girin`}
-                      required
-                    />
-                  </div>
-                )
-              )}
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                >
-                  İleri
-                </button>
-              </div>
-            </form>
+    <div className="min-h-screen bg-primary flex items-center justify-center py-10 px-4">
+      <div className="max-w-3xl w-full bg-accent shadow-lg rounded-lg p-6">
+        <h1 className="text-2xl font-bold text-primary mb-4 text-center">
+          Başvuru Yönetimi Paneli
+        </h1>
+        {successMessage && (
+          <div className="mb-4 p-3 bg-secondary text-white border border-secondary rounded-md">
+            {successMessage}
           </div>
         )}
-
-        {currentStep === 2 && (
-          <div>
-            <h2 className="text-xl font-bold mb-4 text-center">Dosya Ekleme - Adım 2</h2>
-            <div className="mb-4">
-              <label className="block mb-1 font-medium">Dosya Yükle</label>
+        {errorMessage.general && (
+          <div className="mb-4 p-3 bg-secondary text-white border border-secondary rounded-md">
+            {errorMessage.general}
+          </div>
+        )}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {[
+            { label: "TC Kimlik Numarası", name: "idNumber" },
+            { label: "Ad", name: "firstName" },
+            { label: "Soyad", name: "lastName" },
+            { label: "Telefon", name: "applicationPhone" },
+            { label: "E-posta", name: "applicationEmail" },
+            { label: "Başvuran Türü", name: "applicantType" },
+            { label: "Başvuru Nedeni", name: "applicationReason" },
+            { label: "Başvuru Tipi", name: "applicationType" },
+            { label: "Şirket Adı (Opsiyonel)", name: "companyName" },
+            { label: "Şirket Türü (Opsiyonel)", name: "companyType" },
+          ].map((input, index) => (
+            <div key={index} className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                {input.label}
+              </label>
               <input
-                type="file"
-                name="file"
+                type="text"
+                name={input.name}
+                value={formData[input.name] || ""} // Ensuring the value is not null
                 onChange={handleInputChange}
-                className="w-full border p-2 rounded"
+                placeholder={`Enter ${input.label}`}
+                className="mt-1 p-2 w-full border rounded"
               />
             </div>
-            <div className="flex justify-between">
-              <button
-                onClick={handlePreviousStep}
-                className="bg-gray-300 px-4 py-2 rounded"
-              >
-                Geri
-              </button>
-              <button
-                onClick={handleNextStepWithFileCheck}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
-                İleri
-              </button>
-            </div>
-          </div>
-        )}
+          ))}
 
-        {currentStep === 3 && (
-          <div>
-            <h2 className="text-xl font-bold mb-4 text-center">Onaylama - Adım 3</h2>
-            <p className="text-gray-600 mb-4 text-center">
-              Bilgilerinizi kontrol edin ve gönderin.
-            </p>
-            <div className="flex justify-between">
-              <button
-                onClick={handlePreviousStep}
-                className="bg-gray-300 px-4 py-2 rounded"
-              >
-                Geri
-              </button>
-              <button
-                onClick={handleSubmit}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                disabled={loading}
-              >
-                {loading ? "Gönderiliyor..." : "Gönder"}
-              </button>
-            </div>
+          {/* File Upload Section */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Dosya Yükle <span className="text-secondary">*</span>
+            </label>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="mt-1 w-full shadow-sm border border-neutral rounded-md focus:ring-secondary focus:border-secondary"
+            />
+            {file && (
+              <div className="mt-2 text-sm text-green-500">
+                {file.name} seçildi.
+              </div>
+            )}
+            {errorMessage.file && (
+              <p className="text-sm text-red-500">{errorMessage.file}</p>
+            )}
           </div>
-        )}
+
+          <div className="text-center">
+            <button
+              type="submit"
+              className="w-full md:w-auto bg-secondary hover:bg-secondary-dark text-white font-semibold py-2 px-4 rounded-md shadow-lg"
+            >
+              Başvuruyu Gönder
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

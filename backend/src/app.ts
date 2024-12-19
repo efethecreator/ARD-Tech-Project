@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser'; // Cookie parsing için
 import cors from 'cors'; // CORS middleware
 import caseRoutes from './routes/caseRoutes';
 import violationRoutes from './routes/violationRoute';
+import dashboardRoutes from './routes/dashboardRoutes'; // Dashboard rotasını import ediyoruz
 
 const app: Application = express(); // Express uygulamasını başlatıyoruz
 
@@ -38,8 +39,8 @@ app.use('/api/cases', caseRoutes);
 
 app.use('/api/violations', violationRoutes);
 
-
-
+// Dashboard işlemleri rotasını /api/dashboard endpointine bağlıyoruz
+app.use('/api/dashboard', dashboardRoutes);
 
 // Global bir hata yakalama middleware'i (isteğe bağlı)
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

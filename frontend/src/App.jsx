@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import ApplicationList from "./pages/ApplicationList";
@@ -15,6 +15,9 @@ import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => {
+  // Sidebar'ın açık olup olmadığını kontrol eden state
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <Router>
       <Routes>
@@ -31,8 +34,14 @@ const App = () => {
             <PrivateRoute>
               <div className="flex h-screen bg-gray-100">
                 {/* Admin Panel Sidebar */}
-                <Sidebar />
-                <div className="flex-1 flex flex-col">
+                <Sidebar setSidebarOpen={setSidebarOpen} />
+
+                {/* İçerik Alanı */}
+                <div
+                  className={`flex-1 flex flex-col transition-all duration-300 ${
+                    sidebarOpen ? "ml-64" : "ml-20"
+                  }`} // Sidebar açıldığında sağa kayma efekti
+                >
                   {/* Navbar */}
                   <Navbar />
 

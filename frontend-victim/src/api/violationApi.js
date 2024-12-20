@@ -1,20 +1,20 @@
-import axiosClient from "../utils/axiosClient"; // axios client'ı import et
+import axiosClient from "../utils/axiosClient";
 
 const violationApi = {
-  getAllViolations: () => axiosClient.get("/violations"), // Backend'den hak ihlalleri verilerini alır
-  getViolationById: (id) => axiosClient.get(`/violations/${id}`), // Tek bir hak ihlalini alır
-  createViolation: (data) => axiosClient.post("/violations", data), // Yeni bir hak ihlali oluşturur
-  updateViolation: (id, data) => axiosClient.put(`/violations/${id}`, data), // Hak ihlalini günceller
-  deleteViolation: (id) => axiosClient.delete(`/violations/${id}`), // Hak ihlalini siler
+  // Tüm hak ihlallerini getir
+  getAllViolations: () => axiosClient.get("/violations"),
 
-  // Yeni eklenen dosya yükleme fonksiyonu
-  uploadFile: (fileData) => {
-    return axiosClient.post('/upload', fileData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  },
+  // Tek bir hak ihlalini getir
+  getViolationById: (id) => axiosClient.get(`/violations/${id}`),
+
+  // Hak ihlali oluştur
+  createViolation: (data) => axiosClient.post("/violations", data),
+
+  // Hak ihlalini güncelle
+  updateViolation: (id, data) => axiosClient.put(`/violations/${id}`, data),
+
+  // Hak ihlalini sil
+  deleteViolation: (id) => axiosClient.delete(`/violations/${id}`),
 };
 
 export default violationApi;

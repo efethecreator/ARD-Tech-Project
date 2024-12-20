@@ -1,53 +1,65 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBars,
+  faTimes,
+  faHome,
+  faClipboardList,
+  faGavel,
+  faEye,
+} from "@fortawesome/free-solid-svg-icons";
 
-const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+const Navbar = ({ isMenuOpen, setIsMenuOpen }) => {
+  const menuItems = [
+    { name: "Dashboard", path: "/", icon: faHome },
+    { name: "Başvurular", path: "/applications", icon: faClipboardList },
+    { name: "Avukatlar", path: "/lawyers", icon: faGavel },
+    { name: "Davalar", path: "/cases", icon: faEye },
+    { name: "Hak İhlali İzleme", path: "/media-tracking", icon: faEye },
+  ];
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen); // Menü durumunu üst bileşene aktar
 
   return (
-    <div className="bg-[#22333B] text-[#F2F4F3] shadow-md p-4 flex justify-between items-center">
-      <div className="text-2xl font-bold">
-        <span>Admin Paneli</span>
-      </div>
-      <div className="flex items-center space-x-4">
+    <div
+      className={`bg-[#22333B] text-[#F2F4F3] h-full transition-all duration-300 ${
+        isMenuOpen ? "w-64" : "w-20"
+      } fixed top-0 left-0 shadow-md flex flex-col`}
+    >
+      {/* Navbar Header */}
+      <div className="flex items-center justify-between p-4 border-b border-[#F2F4F3]">
+        <span className="text-xl font-bold">
+          {isMenuOpen && "Admin Paneli"}
+        </span>
         <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          onClick={toggleMenu}
           className="text-[#F2F4F3] focus:outline-none"
         >
-          <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
+          <FontAwesomeIcon icon={isMenuOpen ? faTimes : faBars} />
         </button>
-        {isMenuOpen && (
-          <div className="absolute top-16 right-4 bg-[#F2F4F3] text-[#0A0908] p-4 rounded-lg shadow-lg">
-            <ul>
-              <li>
-                <Link to="/" className="block py-2 px-4 hover:bg-[#A9927D]">
-                  Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link to="/applications" className="block py-2 px-4 hover:bg-[#A9927D]">
-                  Başvurular
-                </Link>
-              </li>
-              <li>
-                <Link to="/lawyers" className="block py-2 px-4 hover:bg-[#A9927D]">
-                  Avukatlar
-                </Link>
-              </li>
-              <li>
-                <Link to="/cases" className="block py-2 px-4 hover:bg-[#A9927D]">
-                  Davalar
-                </Link>
-              </li>
-              <li>
-                <Link to="/media-tracking" className="block py-2 px-4 hover:bg-[#A9927D]">
-                  Hak İhlali İzleme
-                </Link>
-              </li>
-            </ul>
-          </div>
-        )}
       </div>
+
+      {/* Menu Items */}
+      <nav className="flex-1">
+        <ul className="space-y-4 p-4">
+          {menuItems.map((item, index) => (
+            <li key={index}>
+              <Link
+                to={item.path}
+                className={`flex items-center p-3 rounded-md transition-all hover:bg-[#A9927D] ${
+                  isMenuOpen ? "justify-start" : "justify-center"
+                }`}
+              >
+                <FontAwesomeIcon icon={item.icon} className="text-lg" />
+                {isMenuOpen && (
+                  <span className="ml-4 text-sm font-medium">{item.name}</span>
+                )}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   );
 };

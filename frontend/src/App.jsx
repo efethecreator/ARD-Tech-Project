@@ -11,13 +11,10 @@ import MediaTracking from "./pages/MediaTracking";
 import AddViolation from "./pages/AddViolation"; // Yeni eklenen dosya
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
-import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => {
-  // Sidebar'ın açık olup olmadığını kontrol eden state
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(true); // Navbar açık/kapalı durumu
 
   return (
     <Router>
@@ -32,44 +29,37 @@ const App = () => {
         <Route
           path="/*"
           element={
-            <PrivateRoute>
-              <div className="flex h-screen bg-gray-100">
-                {/* Admin Panel Sidebar */}
-                <Sidebar setSidebarOpen={setSidebarOpen} />
-
-                {/* İçerik Alanı */}
-                <div
-                  className={`flex-1 flex flex-col transition-all duration-300 ${
-                    sidebarOpen ? "ml-64" : "ml-20"
-                  }`} // Sidebar açıldığında sağa kayma efekti
-                >
-                  {/* Navbar */}
-                  <Navbar />
-
-                  {/* İçerik Route'ları */}
-                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route
-                      path="/applications"
-                      element={<ApplicationList />}
-                    />
-                    <Route
-                      path="/applications/new"
-                      element={<ApplicationForm />}
-                    />
-                    <Route
-                      path="/applications/:id"
-                      element={<ApplicationDetail />} // Başvuru detay sayfası
-                    />
-                    <Route path="/cases" element={<CaseList />} />
-                    <Route path="/cases/new" element={<CaseForm />} />
-                    <Route path="/lawyers" element={<LawyerList />} />
-                    <Route path="/media-tracking" element={<MediaTracking />} />
-                    <Route path="/violations/add" element={<AddViolation />} />
-                  </Routes>
-                </div>
+            <div className="flex h-screen bg-gray-100">
+              {/* Navbar */}
+              <Navbar isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+              <div
+                className={`flex-1 flex flex-col transition-all duration-300 ${
+                  isMenuOpen ? "ml-64" : "ml-20"
+                }`} // Navbar genişliğine göre kaydırma
+              >
+                {/* İçerik Route'ları */}
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/applications" element={<ApplicationList />} />
+                  <Route
+                    path="/applications/new"
+                    element={<ApplicationForm />}
+                  />
+                  <Route
+                    path="/applications/:id"
+                    element={<ApplicationDetail />} // Başvuru detay sayfası
+                  />
+                  <Route path="/cases" element={<CaseList />} />
+                  <Route path="/cases/new" element={<CaseForm />} />
+                  <Route path="/lawyers" element={<LawyerList />} />
+                  <Route
+                    path="/media-tracking"
+                    element={<MediaTracking />}
+                  />
+                  <Route path="/violations/add" element={<AddViolation />} />
+                </Routes>
               </div>
-            </PrivateRoute>
+            </div>
           }
         />
       </Routes>

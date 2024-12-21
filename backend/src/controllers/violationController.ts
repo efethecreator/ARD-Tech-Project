@@ -1,48 +1,17 @@
-import { Request, Response, RequestHandler } from "express";
+import { Request, Response } from "express";
 import violationModel from "../models/violationModel";
 import { get } from "mongoose";
-import { uploadFileS3 } from "../services/aws3service"; // Assuming this is the path to your S3 upload function
-import { v4 as uuidv4 } from "uuid";
 
 export default class ViolationController {
-  static createViolation: RequestHandler = async (
-    req: Request,
-    res: Response
-  ): Promise<void> => {
+  static async createViolation(req: Request, res: Response) {
     try {
       const violationData = req.body;
-      const file = req.file; // Dosya alındı
-      if (!file) {
-        res.status(400).json({ message: "File is required" });
-        return;
-      }
-
-      if (file) {
-        // Dosya yüklenmeden önce benzersiz bir dosya anahtarı oluşturuluyor
-        const fileKey = `violations/${uuidv4()}-${file.originalname}`;
-
-        // Dosyayı S3'ye yükleyip geri dönen anahtarı alıyoruz
-        const { fileKey: uploadedFileKey } = await uploadFileS3(fileKey, file);
-
-        // Dosya bilgisini violationData'ya ekliyoruz
-        violationData.files = {
-          fileKey: uploadedFileKey,
-          description: "File uploaded for violation",
-        };
-      }
-
-      // Violation kaydını veritabanına ekliyoruz
       const newViolation = await violationModel.create(violationData);
-
-      // Başarı durumunda yanıt gönderiyoruz
       res.status(201).json(newViolation);
-    } catch (error: any) {
-      console.error("Error creating violation:", error);
-      res
-        .status(500)
-        .json({ message: "Error creating violation", error: error.message });
+    } catch (error) {
+      res.status(500).json({ message: "Error creating violation", error });
     }
-  };
+  }
 
   static async getViolations(req: Request, res: Response) {
     try {

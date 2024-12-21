@@ -89,7 +89,7 @@ export const login = async (req: Request, res: Response) => {
     });
     // Cookie'ye token yaz
     res.cookie("token", token, { httpOnly: true });
-    res.status(200).json({ message: "Login successful", token });
+    res.status(200).json({ message: "Login successful", token, userRole: user.userRole });
   } catch (error) {
     res.status(500).json({ message: "Error logging in", error });
   }

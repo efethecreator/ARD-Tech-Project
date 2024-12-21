@@ -63,4 +63,15 @@ export const deleteUser = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: "Error deleting user", error });
   }
+
+
+};
+
+export const getUserByTcNumber = async (TCNumber: number) => {
+  try {
+    const user = await User.findOne({ TCNumber });
+    return user;
+  } catch (error) {
+    throw new Error("Error fetching user by TCNumber");
+  }
 };

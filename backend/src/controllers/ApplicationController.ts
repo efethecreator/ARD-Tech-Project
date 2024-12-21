@@ -202,6 +202,31 @@ class ApplicationController {
       res.status(500).json({ message: error.message });
     }
   };
+
+  addLawyer: RequestHandler = async (req: Request, res: Response) => {
+    try {
+      const applicationId = req.params.id;
+      const { lawyerId } = req.body;
+
+      const updatedApplication = await ApplicationService.addLawyer(
+        applicationId,
+        lawyerId
+      );
+
+      if (!updatedApplication) {
+        res.status(404).json({ message: "Application or Lawyer not found" });
+        return;
+      }
+
+      res.status(200).json({
+        message: "Lawyer added successfully",
+        data: updatedApplication,
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+
 }
 
 export default new ApplicationController();

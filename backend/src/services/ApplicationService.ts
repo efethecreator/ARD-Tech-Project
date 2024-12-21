@@ -43,6 +43,17 @@ class ApplicationService {
       { new: true }
     );
   }
+
+  async addLawyer(
+    applicationId: string,
+    lawyerId: string
+  ): Promise<IApplication | null> {
+    return await ApplicationModel.findByIdAndUpdate(
+      applicationId,
+      { $set: { lawyerId } },
+      { new: true }
+    );
+  }
 }
 
 export default new ApplicationService();

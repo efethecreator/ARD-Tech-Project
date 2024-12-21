@@ -1,3 +1,8 @@
+tamamdır şimdi statusu approved hale gelmiş yani onaylanmış başvurulara özel yeni bir sayfa yapacağız bu sayfada onaylanmış başvurular liste halinde gözükecek ve başvurunun en sağında dava oluştur butonu olacak bu incele butonunda başvuru bilgileri ve başvuru datasında bulunan violationid verileri çekilecek ve görüntelenecek. ek olarak bu verilerin sağ üstünde başvuruyu davaya dönüştüren  
+
+
+
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";

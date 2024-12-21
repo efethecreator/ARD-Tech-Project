@@ -24,12 +24,14 @@ app.use(cors({
 }));
 // Cookie parsing middleware
 app.use(cookieParser()); // cookie-parser middleware
+// Auth rotalarını /api/auth endpointine bağlıyoruz
+app.use('/api/auth', authRoutes);
+
 
 // Başvuru işlemleri rotalarını /api/applications endpointine bağlıyoruz
 app.use('/api/applications', ApplicationRoutes);
 
-// Auth rotalarını /api/auth endpointine bağlıyoruz
-app.use('/api/auth', authRoutes);
+
 
 // Kullanıcı işlemleri rotalarını /api/users endpointine bağlıyoruz
 app.use('/api/users', userRoutes);

@@ -1,7 +1,6 @@
 import mongoose, { Schema, model, Document, mongo } from 'mongoose';
 
 export interface ICase extends Document {
-    applicationId: mongoose.Schema.Types.ObjectId;
     protectedPersonName: string;
     protectedPersonSurname: string;
     protectedPersonTCNumber: Number;
@@ -23,10 +22,10 @@ export interface ICase extends Document {
     ]
     result: string;
     resultPhase: string;
+    applicationId: mongoose.Schema.Types.ObjectId;
 }
 
 const CaseSchema = new Schema<ICase>({
-    applicationId: { type: mongoose.Schema.Types.ObjectId, required: false, ref: "Application", default: null },
     protectedPersonName: { type: String, default: "" },
     protectedPersonSurname: { type: String, default: "" },
     protectedPersonTCNumber: { type: Number, default: 0 },
@@ -47,7 +46,8 @@ const CaseSchema = new Schema<ICase>({
         }
     ], default: [] },
     result: { type: String, default: "" },
-    resultPhase: { type: String, default: "" }
+    resultPhase: { type: String, default: "" },
+    applicationId: { type: mongoose.Schema.Types.ObjectId, required: false, ref: "Application", default: null }
 },
 {
     timestamps: true

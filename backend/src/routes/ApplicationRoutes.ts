@@ -19,5 +19,6 @@ router.get("/status/rejected", ApplicationController.getRejectedApplications);
 router.get("/type/personal", ApplicationController.getPersonalApplications);
 router.get("/type/corporate", ApplicationController.getCorporateApplications);
 router.put("/:id/violation", ApplicationController.addViolation);
+router.put("/:id/lawyer", ApplicationController.addLawyer);
 
 export default router;

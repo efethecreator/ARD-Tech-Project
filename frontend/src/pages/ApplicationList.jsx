@@ -94,7 +94,7 @@ const ApplicationList = () => {
   };
 
   const handleFileChange = (e) => {
-    setFile(e.target.file[0]);
+    setFile(e.target.files[0]);
   };
   const handleFile2Change = (e) => {
     setFormData({ ...formData, file: e.target.file[0] });
@@ -143,62 +143,63 @@ const ApplicationList = () => {
   const handleFinalSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-
+  
     const data = new FormData();
-
-    // Append all form data fields to FormData
+  
+    // FormData'ya form verilerini ekliyoruz
     Object.keys(formData).forEach((key) => {
       data.append(key, formData[key]);
     });
-
-    // Append the file to FormData
+  
+    // Dosyayı FormData'ya ekliyoruz
     if (file) {
-      data.append("file", file);
+      data.append("file", file); // 'file' parametresi doğru şekilde ekleniyor
     }
-
+  
     try {
-      // 1. Step: Create application
+      // 1. Adım: Başvuru oluşturma işlemi
       const applicationResponse = await applicationApi.createApplication(data);
       console.log("Application Response:", applicationResponse);
-
-      // Get application ID from the response
+  
       const applicationId = applicationResponse?.data?.data?._id;
       if (!applicationId) {
         console.error("Application Response Error:", applicationResponse);
         throw new Error("Başvuru oluşturulamadı. Application ID alınamadı.");
       }
-
-      // 2. Step: Create violation
-      const violationData = {
-        category,
-        scanPeriod: formData.scanPeriod || "", // Default value can be set
-        eventCategory: formData.eventCategory || "",
-        eventSummary: formData.eventSummary || "",
-        source: formData.source || "",
-        link: formData.link || "",
-        visualLink: formData.visualLink || "",
-        notificationInstitution: formData.notificationInstitution || "",
-        commissionCase: formData.commissionCase || "",
-        publicInstitution: formData.publicInstitution || "",
-      };
-
-      console.log("Violation data:", violationData);
-
-      const violationResponse = await applicationApi.createViolation(
-        violationData
-      );
-      console.log("Violation API response:", violationResponse);
-
+  
+      // 2. Adım: Violation oluşturma işlemi
+      const violationData = new FormData();
+  
+      violationData.append("category", category);
+      violationData.append("scanPeriod", formData.scanPeriod || "");
+      violationData.append("eventCategory", formData.eventCategory || "");
+      violationData.append("eventSummary", formData.eventSummary || "");
+      violationData.append("source", formData.source || "");
+      violationData.append("link", formData.link || "");
+      violationData.append("visualLink", formData.visualLink || "");
+      violationData.append("notificationInstitution", formData.notificationInstitution || "");
+      violationData.append("commissionCase", formData.commissionCase || "");
+      violationData.append("publicInstitution", formData.publicInstitution || "");
+  
+      // Dosya varsa ekliyoruz
+      if (file) {
+        violationData.append("file", file);  // Dosya gönderimi de yapılacak
+      }
+  
+      // Violation kaydını oluşturuyoruz
+      const violationResponse = await applicationApi.createViolation(violationData);
+      console.log("Violation Response:", violationResponse);
+  
       const violationId = violationResponse?.data?._id;
       if (!violationId) {
         console.error("Violation Response Error:", violationResponse);
         throw new Error("Violation oluşturulurken hata oluştu.");
       }
-
-      // 3. Step: Add violation to application
+  
+      // Başvuruyu güncelleyerek violation ekliyoruz
       await applicationApi.addViolation(applicationId, { violationId });
       console.log("Violation successfully added.");
-
+  
       alert("Başvuru ve Violation başarıyla kaydedildi!");
       closePopup();
       fetchApplications();

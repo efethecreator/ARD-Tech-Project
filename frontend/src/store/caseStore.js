@@ -19,7 +19,7 @@ const useCaseStore = create((set) => ({
 
   // Yeni dava ekle
  // store/caseStore.js
-addCase: async (caseData) => {
+  createCase: async (caseData) => {
     try {
       const response = await caseApi.createCase(caseData);
       set((state) => ({ cases: [...state.cases, response.data] })); // Backend'den gelen veri eklendi

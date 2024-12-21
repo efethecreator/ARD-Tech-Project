@@ -9,6 +9,8 @@ const applicationApi = {
   delete: (id) => axiosClient.delete(`/applications/${id}`),
   addViolation: (applicationId, data) =>
     axiosClient.put(`/applications/${applicationId}/violation`, data),
+  addLawyer: (applicationId, data) =>
+    axiosClient.put(`/applications/${applicationId}/lawyer`, data),
 };
 
 export default applicationApi;

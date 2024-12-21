@@ -23,3 +23,7 @@ export const deleteUser = async (id: string) => {
   if (!deletedUser) throw new Error("User not found");
   return deletedUser;
 };
+
+export const getUserByTcNumber = async (TCNumber: number) => {
+  return await User.findOne({ TCNumber });
+};

@@ -11,6 +11,17 @@ const useViolationStore = create((set) => ({
       console.error("Error fetching violations:", error);
     }
   },
+  
+  createViolation: async (data) => {
+    try {
+      const response = await violationApi.createViolation(data);
+      return response;
+    } catch (error) {
+      console.error("Error creating violation:", error);
+      throw error;
+    }
+  },
+
   addViolation: async (data) => {
     try {
       const response = await violationApi.createViolation(data);

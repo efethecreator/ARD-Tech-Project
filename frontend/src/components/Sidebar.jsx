@@ -6,7 +6,7 @@ const Sidebar = () => {
   const menuItems = [
     { name: 'Dashboard', path: '/' },
     { name: 'Başvurular', path: '/applications' },
-    { name: 'Avukatlar', path: '/lawyers' },
+    { name: 'Kullanıcılar', path: '/users' },
     { name: 'Davalar', path: '/cases' },
     { name: 'Hak İhlali İzleme', path: '/media-tracking' },
   ];

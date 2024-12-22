@@ -88,7 +88,7 @@ const UserList = () => {
       </div>
 
       {/* Kullanıcı Listesi */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+      <div className="overflow-y-auto max-h-[700px] p-4 bg-white rounded-lg shadow-md border">
         <table className="w-full text-left">
           <thead className="bg-[#EDE0D4] text-[#5C4033]">
             <tr>

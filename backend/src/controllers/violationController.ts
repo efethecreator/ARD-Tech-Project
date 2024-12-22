@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import violationModel from "../models/violationModel";
-import { get } from "mongoose";
 
 export default class ViolationController {
   static async createViolation(req: Request, res: Response) {
@@ -15,7 +14,17 @@ export default class ViolationController {
 
   static async getViolations(req: Request, res: Response) {
     try {
-      const violations = await violationModel.find();
+      const { caseId } = req.query; // `caseId` query parametresi alınır
+
+      let violations;
+      if (caseId) {
+        // Eğer caseId varsa, sadece o dava ile ilişkili hak ihlalleri döndür
+        violations = await violationModel.find({ commissionCase: caseId });
+      } else {
+        // caseId yoksa, tüm hak ihlallerini döndür
+        violations = await violationModel.find();
+      }
+
       res.status(200).json(violations);
     } catch (error) {
       res.status(500).json({ message: "Error fetching violations", error });

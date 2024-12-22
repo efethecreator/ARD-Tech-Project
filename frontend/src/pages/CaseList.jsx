@@ -8,6 +8,7 @@ const CaseList = () => {
   const [filteredCases, setFilteredCases] = useState([]); // Filtrelenmiş davalar
   const [selectedCase, setSelectedCase] = useState(null);
   const [applicationDetails, setApplicationDetails] = useState(null); // Başvuru detayları
+  const [violations, setViolations] = useState([]); // Hak ihlalleri
   const [showModal, setShowModal] = useState(false);
   const [fileStatus, setFileStatus] = useState(""); // Durum güncellemek için state
   const [noCasesMessage, setNoCasesMessage] = useState(""); // Dava yoksa mesaj
@@ -16,6 +17,7 @@ const CaseList = () => {
   const navigate = useNavigate();
   const { role, userId } = useAuthStore(); // Kullanıcı bilgileri store'dan alınıyor
 
+  // Davaları yükleme
   useEffect(() => {
     const fetchCases = async () => {
       try {
@@ -49,7 +51,27 @@ const CaseList = () => {
     if (userId) fetchCases();
   }, [role, userId]);
 
+  // Hak ihlallerini her dava için yükleme
+  const fetchViolations = async (caseId) => {
+    try {
+      const response = await axiosClient.get(`/violations?caseId=${caseId}`);
+      console.log('API response for violations:', response.data);  // Veriyi kontrol et
+      if (response.data.length === 0) {
+        setError("Bu dava için hak ihlali bulunamadı.");
+        setViolations([]);  // Eğer ihlaller yoksa temizle
+      } else {
+        setViolations(response.data);
+      }
+    } catch (error) {
+      console.error("Hak ihlalleri çekilirken bir hata oluştu:", error);
+      setError("Hak ihlalleri yüklenirken bir hata oluştu.");
+      setViolations([]); // Hata durumunda boş bir dizi döndür
+    }
+  };
+
+  // Modal açıldığında dava ve başvuru detaylarını ve ilişkili hak ihlalini yükleme
   const openModal = async (id, applicationId) => {
+    setViolations([]); // Modal açıldığında önceki verileri temizle
     try {
       const response = await axiosClient.get(`/cases/${id}`);
       const caseData = response.data;
@@ -62,6 +84,14 @@ const CaseList = () => {
       if (applicationId) {
         const appResponse = await axiosClient.get(`/applications/${applicationId}`);
         setApplicationDetails(appResponse.data);
+        
+        // Başvuruya ait hak ihlali verisini getir
+        if (appResponse.data.violationId) {
+          const violationResponse = await axiosClient.get(`/violations/${appResponse.data.violationId}`);
+          setViolations([violationResponse.data]);  // İhlali başvuru ile ilişkilendiriyoruz
+        } else {
+          setViolations([]); // Violation ID yoksa, boş bir ihlal listesi
+        }
       }
 
       setShowModal(true);
@@ -76,6 +106,7 @@ const CaseList = () => {
     setSelectedCase(null);
     setFileStatus("");
     setApplicationDetails(null);
+    setViolations([]); // Modal kapanırken ihlalleri temizle
     setError(null);
   };
 
@@ -166,7 +197,9 @@ const CaseList = () => {
             >
               &times;
             </button>
-            <div className="w-full">
+
+            {/* Dava Detayları */}
+            <div className="w-1/3">
               <h2 className="text-xl font-bold mb-4 text-primary-dark">Dava Detayları</h2>
               <div className="space-y-2 text-muted">
                 <div>
@@ -282,7 +315,8 @@ const CaseList = () => {
               </div>
             </div>
 
-            <div className="w-full overflow-y-scroll h-80 border-l pl-4">
+            {/* Başvuru Detayları */}
+            <div className="w-1/3 overflow-y-scroll h-80 border-l pl-4">
               <h2 className="text-lg font-bold mb-4 text-secondary-dark">Başvuru Detayları</h2>
               {applicationDetails ? (
                 <div className="text-xs">
@@ -299,6 +333,21 @@ const CaseList = () => {
                 </div>
               ) : (
                 <p className="text-gray-500">Yükleniyor...</p>
+              )}
+
+              {/* Hak İhlalleri */}
+              <h2 className="text-lg font-bold mb-4 text-secondary-dark mt-6">Hak İhlalleri</h2>
+              {violations.length > 0 ? (
+                violations.map((violation) => (
+                  <div key={violation._id} className="text-xs mb-2">
+                    <p><strong>Kategori:</strong> {violation.category}</p>
+                    <p><strong>Olay Özeti:</strong> {violation.eventSummary}</p>
+                    <p><strong>Kaynak:</strong> {violation.source}</p>
+                    <p><strong>Link:</strong> <a href={violation.link} target="_blank" rel="noopener noreferrer">{violation.link}</a></p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500">İhlaller bulunamadı.</p>
               )}
             </div>
           </div>

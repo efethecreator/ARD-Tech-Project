@@ -211,68 +211,9 @@ const ApplicationList = () => {
     }
   };
 
-  // const handleFinalSubmit = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const data = new FormData();
-  //     Object.keys(formData).forEach((key) => data.append(key, formData[key]));
-  //     data.append("file", file);
-
-  //     // 1. Adım: Başvuru oluştur
-  //     const applicationResponse = await applicationApi.createApplication(data);
-  //     console.log("Application Response:", applicationResponse);
-
-  //     // Gelen yanıtın iç yapısını kontrol edin
-  //     const applicationId = applicationResponse?.data?.data?._id;
-  //     if (!applicationId) {
-  //       console.error("Application Response Error:", applicationResponse);
-  //       throw new Error("Başvuru oluşturulamadı. Application ID alınamadı.");
-  //     }
-
-  //     // 2. Adım: Violation oluştur
-  //     const violationData = {
-  //       category,
-  //       scanPeriod: formData.scanPeriod || "", // Varsayılan değer atanabilir
-  //       eventCategory: formData.eventCategory || "",
-  //       eventSummary: formData.eventSummary || "",
-  //       source: formData.source || "",
-  //       link: formData.link || "",
-  //       visualLink: formData.visualLink || "",
-  //       notificationInstitution: formData.notificationInstitution || "",
-  //       commissionCase: formData.commissionCase || "",
-  //       publicInstitution: formData.publicInstitution || "",
-  //     };
-
-  //     console.log("Violation için gönderilen data:", violationData);
-
-  //     const violationResponse = await applicationApi.createViolation(
-  //       violationData
-  //     );
-  //     console.log("Violation API yanıtı:", violationResponse);
-
-  //     const violationId = violationResponse?.data?._id;
-  //     if (!violationId) {
-  //       console.error("Violation Response Error:", violationResponse);
-  //       throw new Error("Violation oluşturulurken hata oluştu.");
-  //     }
-
-  //     // 3. Adım: Başvuruya Violation ekle
-  //     await applicationApi.addViolation(applicationId, { violationId });
-  //     console.log("Violation Başarıyla Eklendi.");
-
-  //     alert("Başvuru ve Violation başarıyla kaydedildi!");
-  //     closePopup();
-  //     fetchApplications();
-  //   } catch (error) {
-  //     console.error("Error during submission:", error);
-  //     alert(error.message || "Bir hata oluştu. Lütfen tekrar deneyin.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-10 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Applications</h1>
         <button
@@ -282,7 +223,7 @@ const ApplicationList = () => {
           Add Application
         </button>
       </div>
-      <div className="overflow-y-auto max-h-[500px] p-4 bg-white rounded-lg shadow-md border">
+      <div className="overflow-y-auto max-h-[700px] p-4 bg-white rounded-lg shadow-md border">
         {applications.length === 0 ? (
           <p className="text-gray-500 text-center">No applications found.</p>
         ) : (
@@ -296,7 +237,7 @@ const ApplicationList = () => {
                   {app.firstName} {app.lastName}
                 </h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  {app.applicationReason || "No reason specified"}
+                  {app.status || "No reason specified"}
                 </p>
                 <div className="flex justify-between items-center">
                   <button

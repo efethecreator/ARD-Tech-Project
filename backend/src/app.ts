@@ -9,6 +9,9 @@ import cors from 'cors'; // CORS middleware
 import caseRoutes from './routes/caseRoutes';
 import violationRoutes from './routes/violationRoute';
 import dashboardRoutes from "./routes/dashboardRoutes";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 
 const app: Application = express(); // Express uygulamasını başlatıyoruz
@@ -21,7 +24,7 @@ app.use(express.json());
 
 // CORS middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'], 
+  origin: [process.env.FRONT_END_URL || "" , process.env.VICTIM_FRONT_END_URL || ""], 
   credentials: true
 }));
 // Cookie parsing middleware

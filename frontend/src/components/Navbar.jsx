@@ -1,15 +1,8 @@
-import React, { useEffect } from 'react';
-import useAuthStore from '../store/authStore';
+import React, { useEffect } from "react";
+import useAuthStore from "../store/authStore";
 
 const Navbar = () => {
-  const { role, userId, name, surname, fetchUserDetails } = useAuthStore();
-
-  useEffect(() => {
-    // Kullanıcı bilgilerini fetch et
-    if (!name || !surname || !role) {
-      fetchUserDetails();
-    }
-  }, [fetchUserDetails, name, surname, role]);
+  const { role, userId, name, surname } = useAuthStore();
 
   return (
     <div className="bg-primary text-secondary-dark shadow-md p-4 flex justify-between items-center">
@@ -22,7 +15,9 @@ const Navbar = () => {
             className="w-10 h-10 rounded-full"
           />
           <div className="ml-2 text-sm">
-            <p>{name} {surname}</p>
+            <p>
+              {name} {surname}
+            </p>
             <p>Rol: {role}</p>
             <p>ID: {userId}</p>
           </div>

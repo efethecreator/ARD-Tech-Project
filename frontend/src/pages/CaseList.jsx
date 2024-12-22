@@ -20,9 +20,6 @@ const CaseList = () => {
         const response = await axiosClient.get("/cases");
         const allCases = response.data;
 
-        console.log("Tüm Davalar:", allCases);
-        console.log("Kullanıcı ID:", userId);
-
         if (role === "lawyer" && userId) {
           // LawyerId eşleştirilerek avukatın atanmış davaları filtreleniyor
           const lawyerCases = allCases.filter(

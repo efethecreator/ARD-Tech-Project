@@ -12,7 +12,10 @@ const useAuthStore = create((set) => ({
 
   loginUser: async (TCNumber, password) => {
     try {
-      const { data } = await axiosClient.post("/auth/login", { TCNumber, password });
+      const { data } = await axiosClient.post("/auth/login", {
+        TCNumber,
+        password,
+      });
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.userRole);
       localStorage.setItem("userId", data.userId);
@@ -31,20 +34,6 @@ const useAuthStore = create((set) => ({
         userId: null,
         error: err.message,
       });
-    }
-  },
-
-  fetchUserDetails: async () => {
-    try {
-      const { data } = await axiosClient.get("/auth/me");
-      set({
-        name: data.name,
-        surname: data.surname,
-        role: data.userRole,
-        userId: data._id,
-      });
-    } catch (err) {
-      console.error("Kullanıcı bilgileri alınamadı:", err);
     }
   },
 

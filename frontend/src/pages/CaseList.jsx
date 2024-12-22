@@ -1,26 +1,58 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../utils/axiosClient";
 import { useNavigate } from "react-router-dom";
+import useAuthStore from "../store/authStore"; // Kullanıcı bilgisi için store kullanılıyor
 
 const CaseList = () => {
   const [cases, setCases] = useState([]);
+  const [filteredCases, setFilteredCases] = useState([]); // Filtrelenmiş davalar
   const [selectedCase, setSelectedCase] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [fileStatus, setFileStatus] = useState(""); // Durum güncellemek için state
+  const [noCasesMessage, setNoCasesMessage] = useState(""); // Dava yoksa mesaj
 
   const navigate = useNavigate();
+  const { role, userId } = useAuthStore(); // Kullanıcı bilgileri store'dan alınıyor
 
   useEffect(() => {
     const fetchCases = async () => {
       try {
         const response = await axiosClient.get("/cases");
-        setCases(response.data);
+        const allCases = response.data;
+
+        console.log("Tüm Davalar:", allCases);
+        console.log("Kullanıcı ID (Avukat/Lawyer):", userId);
+
+        if (role === "lawyer" && userId) {
+          // Avukatlara atanmış davaları filtrele
+          const lawyerCases = allCases.filter(
+            (caseItem) =>
+              caseItem.lawyerId && caseItem.lawyerId.toString() === userId.toString()
+          );
+
+          console.log("Avukata Atanan Davalar:", lawyerCases);
+
+          if (lawyerCases.length === 0) {
+            setNoCasesMessage("Şu anda size atanmış bir dava bulunmamaktadır.");
+            setFilteredCases([]);
+          } else {
+            setFilteredCases(lawyerCases);
+            setNoCasesMessage("");
+          }
+        } else if (role === "admin") {
+          // Adminler tüm davaları görür
+          setFilteredCases(allCases);
+        } else {
+          setNoCasesMessage("Davalar görüntülenemiyor. Lütfen tekrar giriş yapınız.");
+        }
       } catch (error) {
-        console.error("Error fetching cases:", error);
+        console.error("Davalar çekilirken bir hata oluştu:", error);
+        setNoCasesMessage("Davalar yüklenirken bir hata oluştu.");
       }
     };
-    fetchCases();
-  }, []);
+
+    if (userId) fetchCases();
+  }, [role, userId]);
 
   const openModal = async (id) => {
     try {
@@ -43,7 +75,7 @@ const CaseList = () => {
     try {
       const updatedData = { ...selectedCase, result: fileStatus };
       await axiosClient.put(`/cases/${selectedCase._id}`, updatedData);
-      setCases((prev) =>
+      setFilteredCases((prev) =>
         prev.map((c) => (c._id === selectedCase._id ? updatedData : c))
       );
       closeModal();
@@ -55,7 +87,7 @@ const CaseList = () => {
   const handleDelete = async (id) => {
     try {
       await axiosClient.delete(`/cases/${id}`);
-      setCases((prev) => prev.filter((c) => c._id !== id));
+      setFilteredCases((prev) => prev.filter((c) => c._id !== id));
       closeModal();
     } catch (error) {
       console.error("Error deleting case:", error);
@@ -67,47 +99,55 @@ const CaseList = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-primary-dark">Davalar</h1>
-        <button
-          onClick={() => navigate("/cases/new")}
-          className="bg-primary-light text-white px-4 py-2 rounded hover:bg-primary-dark transition duration-300"
-        >
-          + Yeni Dava Ekle
-        </button>
+        {role === "admin" && (
+          <button
+            onClick={() => navigate("/cases/new")}
+            className="bg-primary-light text-white px-4 py-2 rounded hover:bg-primary-dark transition duration-300"
+          >
+            + Yeni Dava Ekle
+          </button>
+        )}
       </div>
 
-      {/* Dava Kartları */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cases.map((c) => (
-          <div
-            key={c._id}
-            className="bg-white border border-border rounded-lg shadow-md hover:shadow-lg transition duration-300 p-4 flex flex-col"
-          >
-            <h3 className="text-lg font-bold text-primary-dark mb-2">
-              Mahkeme: {c.courtName}
-            </h3>
-            <p className="text-sm text-muted mb-1">
-              <strong>Başvuru ID:</strong> {c.applicationId}
-            </p>
-            <p className="text-sm text-muted mb-1">
-              <strong>Durum:</strong> {c.result || "Belirtilmedi"}
-            </p>
-            <div className="flex justify-between mt-auto">
-              <button
-                onClick={() => openModal(c._id)}
-                className="bg-secondary-light text-white py-1 px-3 rounded hover:bg-secondary-dark transition"
-              >
-                Detayları Gör
-              </button>
-              <button
-                onClick={() => handleDelete(c._id)}
-                className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700 transition"
-              >
-                Sil
-              </button>
+      {/* No Cases Message */}
+      {noCasesMessage ? (
+        <p className="text-center text-gray-500">{noCasesMessage}</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredCases.map((c) => (
+            <div
+              key={c._id}
+              className="bg-white border border-border rounded-lg shadow-md hover:shadow-lg transition duration-300 p-4 flex flex-col"
+            >
+              <h3 className="text-lg font-bold text-primary-dark mb-2">
+                Mahkeme: {c.courtName}
+              </h3>
+              <p className="text-sm text-muted mb-1">
+                <strong>Başvuru ID:</strong> {c.applicationId}
+              </p>
+              <p className="text-sm text-muted mb-1">
+                <strong>Durum:</strong> {c.result || "Belirtilmedi"}
+              </p>
+              <div className="flex justify-between mt-auto">
+                <button
+                  onClick={() => openModal(c._id)}
+                  className="bg-secondary-light text-white py-1 px-3 rounded hover:bg-secondary-dark transition"
+                >
+                  Detayları Gör
+                </button>
+                {role === "admin" && (
+                  <button
+                    onClick={() => handleDelete(c._id)}
+                    className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700 transition"
+                  >
+                    Sil
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Modal */}
       {showModal && selectedCase && (
@@ -123,7 +163,6 @@ const CaseList = () => {
               Dava Detayları
             </h2>
             <div className="space-y-4 text-muted">
-              {/* Detaylar */}
               <p>
                 <strong>Mahkeme:</strong> {selectedCase.courtName}
               </p>
@@ -132,7 +171,8 @@ const CaseList = () => {
               </p>
               <p>
                 <strong>Korunan Kişi:</strong>{" "}
-                {selectedCase.protectedPersonName} {selectedCase.protectedPersonSurname}
+                {selectedCase.protectedPersonName}{" "}
+                {selectedCase.protectedPersonSurname}
               </p>
               <p>
                 <strong>TC Kimlik Numarası:</strong>{" "}
@@ -144,15 +184,6 @@ const CaseList = () => {
               <p>
                 <strong>Sonuç:</strong> {selectedCase.result || "Belirtilmedi"}
               </p>
-              <p>
-                <strong>Sonuç Aşaması:</strong>{" "}
-                {selectedCase.resultPhase || "Belirtilmedi"}
-              </p>
-              <p>
-                <strong>İddianame:</strong> {selectedCase.indictment}
-              </p>
-
-              {/* Durum Güncelle */}
               <label className="block font-bold mb-2">Durumu Güncelle</label>
               <select
                 value={fileStatus}

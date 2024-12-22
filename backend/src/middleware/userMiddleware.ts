@@ -11,13 +11,11 @@ export const isAuthenticatedLawyer = async (
     const token = req.cookies["jwtToken"]; // Token'ı cookie'den alıyoruz
 
     if (!token) {
-      res.status(403).json({ message: "No token provided" }); // Token eksik
-      return;
+      return res.status(403).json({ message: "No token provided" }); // Token eksik
     }
 
     if (!process.env.JWT_SECRET_KEY) {
-      res.status(500).json({ message: "JWT secret is not defined" });
-      return;
+      return res.status(500).json({ message: "JWT secret is not defined" }); // Sunucu yapılandırma hatası
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY) as {
@@ -25,26 +23,27 @@ export const isAuthenticatedLawyer = async (
       userRole: string;
     };
 
-    // Kullanıcı var mı kontrol et
+    // Kullanıcı veritabanında var mı kontrol et
     const existingUser = await getUserByTcNumber(decoded.TCNumber);
-    if (
-      !existingUser ||
-      (decoded.userRole !== "user" && decoded.userRole !== "admin")
-    ) {
-      res.status(401).json({ message: "Unauthorized" }); // Kullanıcı yok veya kullanıcı tipi uygun değil
-      return;
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" }); // Kullanıcı yok
     }
 
-    req.body.user = {
-      TCNumber: existingUser.TCNumber,
-      userType: existingUser.userRole,
+    // Kullanıcı rolü kontrolü
+    if (existingUser.userRole !== "lawyer" && existingUser.userRole !== "admin") {
+      return res.status(401).json({ message: "Unauthorized access" }); // Yetkisiz erişim
+    }
+
+    // Kullanıcıyı req.body.user yerine req.user'a ekle
+    req.user = {
       userId: existingUser._id,
+      userRole: existingUser.userRole,
+      TCNumber: existingUser.TCNumber,
     };
 
-    next(); // Kullanıcı doğrulandı, devam et
+    next(); // Kullanıcı doğrulandı, bir sonraki middleware'e devam et
   } catch (error) {
-    console.log(error);
-    res.sendStatus(400); // Geçersiz token veya başka bir hata
-    return;
+    console.error("Error in token verification:", error);
+    return res.status(400).json({ message: "Invalid token" }); // Geçersiz token veya başka bir hata
   }
 };

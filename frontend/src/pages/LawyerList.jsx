@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosClient from "../utils/axiosClient";
-import { register } from "../api/authapi";
+import { register } from "../api/authApi";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -26,6 +26,7 @@ const UserList = () => {
     setLoading(true);
     try {
       const response = await axiosClient.get("/users");
+      console.log("Kullanıcılar:", response.data); // Log eklendi
       setUsers(response.data);
     } catch (error) {
       console.error("Kullanıcıları alırken hata oluştu:", error);
@@ -38,15 +39,17 @@ const UserList = () => {
   const handleAddUser = async () => {
     try {
       // Modeldeki verilere uygun verileri ekliyoruz
-      await register({
+      const response = await register({
         name: newUser.name,
         surname: newUser.surname,
         TCNumber: newUser.TCNumber,
         userRole: newUser.userRole,
         password: newUser.password, // Password eklenebilir ancak genellikle hashlenmiş olacak
       });
+
+      console.log("Yeni Kullanıcı Eklendi:", response); // Log eklendi
       setShowAddModal(false);
-      fetchUsers();
+      fetchUsers(); // Kullanıcıları yeniden yükle
       setNewUser({
         name: "",
         surname: "",

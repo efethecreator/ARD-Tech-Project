@@ -8,6 +8,8 @@ import cookieParser from 'cookie-parser'; // Cookie parsing için
 import cors from 'cors'; // CORS middleware
 import caseRoutes from './routes/caseRoutes';
 import violationRoutes from './routes/violationRoute';
+import dashboardRoutes from "./routes/dashboardRoutes";
+
 
 const app: Application = express(); // Express uygulamasını başlatıyoruz
 
@@ -53,3 +55,5 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 app.listen(PORT, () => {
   console.log(`Server ${PORT} üzerinde çalışıyor.`);
 });
+
+app.use("/api/dashboard", dashboardRoutes);

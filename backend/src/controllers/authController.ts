@@ -35,7 +35,6 @@ export const createUser = async (req: Request, res: Response) => {
 
     res.status(201).json({ message: "User created successfully" });
   } catch (error: unknown) {
-    // Hata türü ve mesajını güvenli bir şekilde ele alma
     if (
       typeof error === "object" &&
       error !== null &&
@@ -64,7 +63,6 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { TCNumber, password } = req.body;
 
-    // Kullanıcıyı TCNumber ile bul ve authentication alanlarını seç
     const user = await User.findOne({ TCNumber }).select(
       "+authentication.password +authentication.salt"
     );
@@ -73,7 +71,6 @@ export const login = async (req: Request, res: Response) => {
       return;
     }
 
-    // Şifreyi doğrula
     const hashedPassword = crypto
       .pbkdf2Sync(password, user.authentication.salt, 1000, 64, "sha512")
       .toString("hex");
@@ -83,22 +80,43 @@ export const login = async (req: Request, res: Response) => {
       return;
     }
 
-    // JWT token oluştur
     const token = jwt.sign({ id: user._id, role: user.userRole }, JWT_SECRET, {
       expiresIn: "1d",
     });
-    // Cookie'ye token yaz
     res.cookie("token", token, { httpOnly: true });
-    res.status(200).json({ message: "Login successful", token, userRole: user.userRole });
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      userRole: user.userRole,
+      userId: user._id, // User ID'yi de döndürüyoruz
+    });
   } catch (error) {
     res.status(500).json({ message: "Error logging in", error });
   }
-  
 };
 
 export const logout = (req: Request, res: Response) => {
-  // Clear the authentication cookie
-  res.cookie('token', '', { httpOnly: true, expires: new Date(0) });
-
+  res.cookie("token", "", { httpOnly: true, expires: new Date(0) });
   res.status(200).json({ message: "Logged out successfully" });
+};
+
+// Kullanıcı detaylarını döndüren endpoint
+export const getMe = async (req: Request, res: Response) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET) as { id: string; role: string };
+    const user = await User.findById(decoded.id).select("name surname userRole _id");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user details", error });
+  }
 };

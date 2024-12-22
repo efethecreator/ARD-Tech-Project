@@ -1,19 +1,21 @@
 import { create } from "zustand";
-import { login } from "../api/authApi";
+import axiosClient from "../utils/axiosClient";
 
 const useAuthStore = create((set) => ({
   isAuthenticated: !!localStorage.getItem("token"),
   token: localStorage.getItem("token"),
   role: localStorage.getItem("role"),
-  userId: localStorage.getItem("userId"), // Kullanıcı ID'sini yükle
+  userId: localStorage.getItem("userId"),
+  name: "",
+  surname: "",
   error: null,
 
   loginUser: async (TCNumber, password) => {
     try {
-      const data = await login(TCNumber, password); // Giriş işlemi
+      const { data } = await axiosClient.post("/auth/login", { TCNumber, password });
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.userRole);
-      localStorage.setItem("userId", data.userId); // Kullanıcı ID'sini kaydet
+      localStorage.setItem("userId", data.userId);
       set({
         isAuthenticated: true,
         token: data.token,
@@ -26,9 +28,23 @@ const useAuthStore = create((set) => ({
         isAuthenticated: false,
         token: null,
         role: null,
-        userId: null, // Hata durumunda null yap
+        userId: null,
         error: err.message,
       });
+    }
+  },
+
+  fetchUserDetails: async () => {
+    try {
+      const { data } = await axiosClient.get("/auth/me");
+      set({
+        name: data.name,
+        surname: data.surname,
+        role: data.userRole,
+        userId: data._id,
+      });
+    } catch (err) {
+      console.error("Kullanıcı bilgileri alınamadı:", err);
     }
   },
 
@@ -41,6 +57,8 @@ const useAuthStore = create((set) => ({
       token: null,
       role: null,
       userId: null,
+      name: "",
+      surname: "",
       error: null,
     });
   },

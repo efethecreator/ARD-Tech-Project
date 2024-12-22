@@ -21,10 +21,10 @@ const CaseList = () => {
         const allCases = response.data;
 
         console.log("Tüm Davalar:", allCases);
-        console.log("Kullanıcı ID (Avukat/Lawyer):", userId);
+        console.log("Kullanıcı ID:", userId);
 
         if (role === "lawyer" && userId) {
-          // Avukatlara atanmış davaları filtrele
+          // LawyerId eşleştirilerek avukatın atanmış davaları filtreleniyor
           const lawyerCases = allCases.filter(
             (caseItem) =>
               caseItem.lawyerId && caseItem.lawyerId.toString() === userId.toString()
@@ -40,7 +40,7 @@ const CaseList = () => {
             setNoCasesMessage("");
           }
         } else if (role === "admin") {
-          // Adminler tüm davaları görür
+          // Admin tüm davaları görür
           setFilteredCases(allCases);
         } else {
           setNoCasesMessage("Davalar görüntülenemiyor. Lütfen tekrar giriş yapınız.");

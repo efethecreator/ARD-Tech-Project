@@ -135,17 +135,6 @@ const CaseList = () => {
   return (
     <div className="p-6 bg-background-light min-h-screen">
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-primary-dark">Davalar</h1>
-        {role === "admin" && (
-          <button
-            onClick={() => navigate("/cases/new")}
-            className="bg-primary-light text-white px-4 py-2 rounded hover:bg-primary-dark transition duration-300"
-          >
-            + Yeni Dava Ekle
-          </button>
-        )}
-      </div>
 
       {/* No Cases Message */}
       {noCasesMessage ? (

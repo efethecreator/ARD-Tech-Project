@@ -91,7 +91,7 @@ const Dashboard = () => {
                     <h3 className="text-lg font-medium text-[#22333B] mb-4">Sistem Durumu</h3>
                     <ul className="text-[#22333B] space-y-2">
                         <li><span className="font-medium">Başvurular:</span> {dataCounts.applications}</li>
-                        <li><span className="font-medium">Kullanıcılar:</span> {dataCounts.user}</li>
+                        <li><span className="font-medium">Kullanıcılar:</span> {dataCounts.users}</li>
                         <li><span className="font-medium">Davalar:</span> {dataCounts.cases}</li>
                     </ul>
                 </div>

@@ -162,14 +162,6 @@ const CaseList = () => {
                 >
                   Detayları Gör
                 </button>
-                {role === "admin" && (
-                  <button
-                    onClick={() => console.log(`Dava silindi: ${c._id}`)}
-                    className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700 transition"
-                  >
-                    Sil
-                  </button>
-                )}
               </div>
             </div>
           ))}

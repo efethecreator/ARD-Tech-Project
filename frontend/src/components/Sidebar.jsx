@@ -24,7 +24,7 @@ const Sidebar = ({ setSidebarOpen, role }) => {
   const menuItems = role === "admin" ? [
     { name: "Anasayfa", path: "/", icon: <FontAwesomeIcon icon={faHome} /> },
     { name: "Başvurular", path: "/applications", icon: <FontAwesomeIcon icon={faClipboardList} /> },
-    { name: "Avukatlar", path: "/users", icon: <FontAwesomeIcon icon={faGavel} /> },
+    { name: "Kullanıcılar", path: "/users", icon: <FontAwesomeIcon icon={faGavel} /> },
     { name: "Davalar", path: "/cases", icon: <FontAwesomeIcon icon={faEye} /> },
   ] : [
     { name: "Davalar", path: "/cases", icon: <FontAwesomeIcon icon={faEye} /> },

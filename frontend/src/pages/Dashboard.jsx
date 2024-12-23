@@ -31,11 +31,11 @@ const Dashboard = () => {
     }, []);
 
     const pieChartData = {
-        labels: ["Başvurular", "Avukatlar", "Davalar"],
+        labels: ["Başvurular", "Kullanıcılar", "Davalar"],
         datasets: [
             {
                 label: "Veri Dağılımı",
-                data: [dataCounts.applications, dataCounts.lawyers, dataCounts.cases],
+                data: [dataCounts.applications, dataCounts.users, dataCounts.cases],
                 backgroundColor: ["#2980b9", "#27ae60", "#f39c12"], // Livelier colors for better visibility
                 hoverOffset: 4,
             },
@@ -65,10 +65,10 @@ const Dashboard = () => {
                         <p className="text-3xl font-semibold text-[#22333B]">{dataCounts.applications}</p>
                     </Link>
 
-                    <Link to="/lawyers" className="bg-[#F2F4F3] hover:bg-[#A9927D] p-6 rounded-lg shadow-md transition duration-300 flex flex-col items-center justify-center border border-[#A9927D]">
+                    <Link to="/users" className="bg-[#F2F4F3] hover:bg-[#A9927D] p-6 rounded-lg shadow-md transition duration-300 flex flex-col items-center justify-center border border-[#A9927D]">
                         <FaUsers className="text-3xl text-[#27ae60] mb-2" />
-                        <h2 className="text-xl font-medium text-[#22333B]">Avukatlar</h2>
-                        <p className="text-3xl font-semibold text-[#22333B]">{dataCounts.lawyers}</p>
+                        <h2 className="text-xl font-medium text-[#22333B]">Kullanıcılar</h2>
+                        <p className="text-3xl font-semibold text-[#22333B]">{dataCounts.users}</p>
                     </Link>
 
                     <Link to="/cases" className="bg-[#F2F4F3] hover:bg-[#A9927D] p-6 rounded-lg shadow-md transition duration-300 flex flex-col items-center justify-center border border-[#A9927D]">
@@ -91,7 +91,7 @@ const Dashboard = () => {
                     <h3 className="text-lg font-medium text-[#22333B] mb-4">Sistem Durumu</h3>
                     <ul className="text-[#22333B] space-y-2">
                         <li><span className="font-medium">Başvurular:</span> {dataCounts.applications}</li>
-                        <li><span className="font-medium">Avukatlar:</span> {dataCounts.lawyers}</li>
+                        <li><span className="font-medium">Kullanıcılar:</span> {dataCounts.user}</li>
                         <li><span className="font-medium">Davalar:</span> {dataCounts.cases}</li>
                     </ul>
                 </div>

@@ -12,7 +12,9 @@ router.get("/counts", async (req, res) => {
     const applicationsCount = await ApplicationModel.countDocuments();
 
     // userRole: 'lawyer' olan kullanıcıları filtrele ve sayısını al
-    const lawyersCount = await UserModel.countDocuments({ userRole: "lawyer" });
+    const usersCount = await UserModel.countDocuments({
+      userRole: { $in: ["admin", "lawyer"] }
+    })
 
     // Toplam dava sayısını al
     const casesCount = await CaseModel.countDocuments();
@@ -20,7 +22,7 @@ router.get("/counts", async (req, res) => {
     // JSON formatında cevap döndür
     res.json({
       applications: applicationsCount,
-      lawyers: lawyersCount,
+      users: usersCount,
       cases: casesCount,
     });
   } catch (error) {

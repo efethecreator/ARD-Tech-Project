@@ -246,12 +246,6 @@ const ApplicationList = () => {
                   >
                     İncele
                   </button>
-                  <button
-                    onClick={() => deleteApplication(app._id)}
-                    className="text-red-500 hover:underline"
-                  >
-                    Sil
-                  </button>
                 </div>
               </div>
             ))}

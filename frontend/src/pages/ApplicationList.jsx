@@ -215,12 +215,12 @@ const ApplicationList = () => {
   return (
     <div className="p-10 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Applications</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Başvurular</h1>
         <button
           onClick={openPopup}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
         >
-          Add Application
+          Başvuru oluştur
         </button>
       </div>
       <div className="overflow-y-auto max-h-[700px] p-4 bg-white rounded-lg shadow-md border">
@@ -244,13 +244,13 @@ const ApplicationList = () => {
                     onClick={() => openApplicationDetail(app._id)} // Başvuruya tıklandığında detay sayfasına yönlendir
                     className="text-blue-500 hover:underline"
                   >
-                    View Details
+                    İncele
                   </button>
                   <button
                     onClick={() => deleteApplication(app._id)}
                     className="text-red-500 hover:underline"
                   >
-                    Delete
+                    Sil
                   </button>
                 </div>
               </div>
@@ -271,7 +271,7 @@ const ApplicationList = () => {
             {currentStep === 1 && (
               <div>
                 <h2 className="text-xl font-bold mb-4 text-gray-800">
-                  Add Application - Step 1
+                  Başvuru Oluştur
                 </h2>
                 <form
                   onSubmit={(e) => {
@@ -280,19 +280,18 @@ const ApplicationList = () => {
                   }}
                 >
                   {[
-                    { label: "TC Identification Number", name: "idNumber" },
-                    { label: "First Name", name: "firstName" },
-                    { label: "Last Name", name: "lastName" },
-                    { label: "Phone", name: "applicationPhone" },
+                    { label: "TC Kimlik Numarası", name: "idNumber" },
+                    { label: "İsim", name: "firstName" },
+                    { label: "Soyisim", name: "lastName" },
+                    { label: "Telefon Numarası", name: "applicationPhone" },
                     { label: "Email", name: "applicationEmail" },
-                    { label: "Applicant Type", name: "applicantType" },
+                    { label: "Başvuru Türü", name: "applicantType" },
                     {
-                      label: "Reason for Application",
+                      label: "Başvuru Sebebi",
                       name: "applicationReason",
                     },
-                    { label: "Application Type", name: "applicationType" },
-                    { label: "Company Name (Optional)", name: "companyName" },
-                    { label: "Company Type (Optional)", name: "companyType" },
+                    { label: "Şirket İsmi (Opsiyonel)", name: "companyName" },
+                    { label: "Şirket Türü (Opsiyonel)", name: "companyType" },
                   ].map((input, index) => (
                     <div key={index} className="mb-4">
                       <label className="block text-sm font-medium text-gray-700">
@@ -303,14 +302,14 @@ const ApplicationList = () => {
                         name={input.name}
                         value={formData[input.name]}
                         onChange={handleInputChange}
-                        placeholder={`Enter ${input.label}`}
+                        placeholder={` ${input.label}`}
                         className="mt-1 p-2 w-full border rounded"
                       />
                     </div>
                   ))}
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">
-                      Upload File
+                      Yüklenecek Dosya
                     </label>
                     <input
                       type="file"
@@ -324,13 +323,13 @@ const ApplicationList = () => {
                       onClick={closePopup}
                       className="mr-2 px-4 py-2 text-gray-600 bg-gray-200 rounded hover:bg-gray-300 transition"
                     >
-                      Cancel
+                      İptal
                     </button>
                     <button
                       type="submit"
                       className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
                     >
-                      Next
+                      Devam
                     </button>
                   </div>
                 </form>
@@ -340,7 +339,7 @@ const ApplicationList = () => {
             {currentStep === 2 && (
               <div>
                 <h2 className="text-xl font-bold mb-4 text-gray-800">
-                  Add Violation - Step 2
+                  Hak İhlali Oluştur
                 </h2>
                 <form
                   onSubmit={(e) => {
@@ -350,7 +349,7 @@ const ApplicationList = () => {
                 >
                   <div className="mb-4">
                     <label className="block mb-1 font-medium text-gray-700">
-                      Select Category
+                      Kategori Seçiniz
                     </label>
                     <select
                       value={category}
@@ -358,12 +357,12 @@ const ApplicationList = () => {
                       className="border border-gray-300 p-2 rounded w-full"
                       required
                     >
-                      <option value="">Select Category</option>
-                      <option value="Media Monitoring">Media Monitoring</option>
-                      <option value="NGO Data">NGO Data</option>
-                      <option value="Bar Committees">Bar Committees</option>
+                      <option value="">Kategori Seçiniz</option>
+                      <option value="Media Monitoring">Medya Taraması</option>
+                      <option value="NGO Data">STK Verileri</option>
+                      <option value="Bar Committees">Baro Komisyonları</option>
                       <option value="Public Institutions">
-                        Public Institutions
+                        Kamu Kurumları
                       </option>
                     </select>
                   </div>
@@ -376,17 +375,17 @@ const ApplicationList = () => {
                           <label className="block text-sm font-medium text-gray-700">
                             {
                               {
-                                scanPeriod: "Scan Period",
-                                eventCategory: "Event Category",
-                                eventSummary: "Event Summary",
-                                source: "Source",
+                                scanPeriod: "Tarama Dönemi",
+                                eventCategory: "Olay Kategorisi",
+                                eventSummary: "Olay Özeti",
+                                source: "Kaynak",
                                 link: "Link",
-                                visualLink: "Visual Link",
+                                visualLink: "Görsel Link",
                                 notificationInstitution:
-                                  "Notification Institution",
-                                commissionCase: "Commission Case",
-                                publicInstitution: "Public Institution",
-                                file: "Upload File",
+                                  "Bildirim Kurumu",
+                                commissionCase: "Vakanın Alındığı Komisyon",
+                                publicInstitution: "Kamu Kurumu",
+                                file: "Dosya",
                               }[field]
                             }
                           </label>
@@ -409,7 +408,7 @@ const ApplicationList = () => {
                       onClick={handlePreviousStep}
                       className="px-4 py-2 text-gray-600 bg-gray-200 rounded hover:bg-gray-300 transition"
                     >
-                      Back
+                      Geri
                     </button>
                     <button
                       type="submit"
@@ -418,7 +417,7 @@ const ApplicationList = () => {
                       }`}
                       disabled={loading}
                     >
-                      {loading ? "Saving..." : "Save"}
+                      {loading ? "Saving..." : "Kaydet"}
                     </button>
                   </div>
                 </form>
@@ -428,9 +427,11 @@ const ApplicationList = () => {
             {currentStep === 3 && (
               <div>
                 <h2 className="text-xl font-bold mb-4 text-gray-800">
-                  Summary and Confirmation - Step 3
+                  Onayla
                 </h2>
-                <p>Check all information before submitting.</p>
+                
+                <p>Bilgileri onaylamak ve oluşturmak istiyor musunuz?</p>
+                
                 <button
                   onClick={handleFinalSubmit}
                   className={`px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition ${
@@ -438,7 +439,7 @@ const ApplicationList = () => {
                   }`}
                   disabled={loading}
                 >
-                  {loading ? "Submitting..." : "Submit"}
+                  {loading ? "Submitting..." : "Oluştur"}
                 </button>
               </div>
             )}

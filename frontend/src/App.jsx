@@ -7,7 +7,6 @@ import ApplicationDetail from "./pages/ApplicationDetailPage";
 import CaseList from "./pages/CaseList";
 import CaseForm from "./pages/CaseForm";
 import LawyerList from "./pages/LawyerList";
-import MediaTracking from "./pages/MediaTracking";
 import AddViolation from "./pages/AddViolation";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -52,7 +51,6 @@ const App = () => {
                       <Route path="/cases" element={<CaseList />} />
                       <Route path="/cases/new" element={<CaseForm />} />
                       <Route path="/users" element={<LawyerList />} />
-                      <Route path="/media-tracking" element={<MediaTracking />} />
                       <Route path="/violations/add" element={<AddViolation />} />
                     </Routes>
                   </div>

@@ -181,9 +181,9 @@ const ApplicationDetailPage = () => {
             onChange={handleStatusChange}
             className="px-4 py-2 border rounded bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
+            <option value="pending">Beklemede</option>
+            <option value="approved">Onaylandı</option>
+            <option value="rejected">Reddedildi</option>
           </select>
         </div>
       </div>
@@ -191,7 +191,7 @@ const ApplicationDetailPage = () => {
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            First Name
+            İsim
           </label>
           <input
             type="text"
@@ -204,7 +204,7 @@ const ApplicationDetailPage = () => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Last Name
+            Soyisim
           </label>
           <input
             type="text"
@@ -217,7 +217,7 @@ const ApplicationDetailPage = () => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Phone
+            Telefon Numarası
           </label>
           <input
             type="text"
@@ -243,7 +243,7 @@ const ApplicationDetailPage = () => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Applicant Type
+            Başvuru Türü
           </label>
           <input
             type="text"
@@ -256,7 +256,7 @@ const ApplicationDetailPage = () => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Application Reason
+            Başvuru Sebebi
           </label>
           <input
             type="text"
@@ -269,20 +269,7 @@ const ApplicationDetailPage = () => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Application Type
-          </label>
-          <input
-            type="text"
-            name="applicationType"
-            value={formData.applicationType}
-            onChange={handleInputChange}
-            className="mt-1 p-2 w-full border rounded"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Company Name
+          Şirket İsmi (Mevcut ise)
           </label>
           <input
             type="text"
@@ -295,7 +282,7 @@ const ApplicationDetailPage = () => {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Company Type
+            Şirket Türü (Mevcut ise)
           </label>
           <input
             type="text"
@@ -309,7 +296,7 @@ const ApplicationDetailPage = () => {
         {/* Başvuru dosyalarını göster */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Uploaded Files
+            Yüklenen Dosya
           </label>
           <div className="space-y-2">
             {formData.files && formData.files.length > 0 ? (
@@ -327,7 +314,7 @@ const ApplicationDetailPage = () => {
                 </div>
               ))
             ) : (
-              <p>No files uploaded.</p>
+              <p>Dosya yok</p>
             )}
           </div>
         </div>
@@ -340,7 +327,7 @@ const ApplicationDetailPage = () => {
             }`}
             disabled={loading}
           >
-            {loading ? "Saving..." : "Save Changes"}
+            {loading ? "Saving..." : "Değişiklikleri Kaydet"}
           </button>
         </div>
       </form>
@@ -354,13 +341,13 @@ const ApplicationDetailPage = () => {
             className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
           >
             {showViolation
-              ? "Hide Violation Details"
-              : "Show Violation Details"}
+              ? "Hak İhlali Detaylarını Gizle"
+              : "Hak İhlali Detaylarını Görüntüle"}
           </button>
 
           {showViolation && violationData && (
             <div className="mt-4 p-4 bg-gray-50 rounded border">
-              <h3 className="text-lg font-bold">Violation Details</h3>
+              <h3 className="text-lg font-bold">Hak İhlali Bilgileri</h3>
 
               {/* Violation dosyalarını görüntüleme */}
               {violationData.files && violationData.files.length > 0 ? (
@@ -377,7 +364,7 @@ const ApplicationDetailPage = () => {
                   </div>
                 ))
               ) : (
-                <p>No files uploaded for violation.</p>
+                <p>Dosya yok</p>
               )}
             </div>
           )}
@@ -393,7 +380,7 @@ const ApplicationDetailPage = () => {
               {violationData.category && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700">
-                    Category
+                    Kategori
                   </label>
                   <input
                     type="text"
@@ -408,7 +395,7 @@ const ApplicationDetailPage = () => {
               {violationData.scanPeriod && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700">
-                    Scan Period
+                    Tarama Dönemi
                   </label>
                   <input
                     type="text"
@@ -423,7 +410,7 @@ const ApplicationDetailPage = () => {
               {violationData.eventCategory && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700">
-                    Event Category
+                    Olay Kategorisi
                   </label>
                   <input
                     type="text"
@@ -438,7 +425,7 @@ const ApplicationDetailPage = () => {
               {violationData.eventSummary && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700">
-                    Event Summary
+                    Olay Özeti
                   </label>
                   <textarea
                     name="eventSummary"
@@ -452,7 +439,7 @@ const ApplicationDetailPage = () => {
               {violationData.notificationInstitution && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700">
-                    Notification Institution
+                    Bildirim Kurulu
                   </label>
                   <input
                     type="text"
@@ -467,7 +454,7 @@ const ApplicationDetailPage = () => {
               {violationData.commissionCase && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700">
-                    Commission Case
+                    Vakanın Alındığı Komisyon
                   </label>
                   <input
                     type="text"
@@ -482,7 +469,7 @@ const ApplicationDetailPage = () => {
               {violationData.publicInstitution && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700">
-                    Public Institution
+                    Kamu Kurumu
                   </label>
                   <input
                     type="text"
@@ -497,7 +484,7 @@ const ApplicationDetailPage = () => {
               {violationData.source && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700">
-                    Source
+                    Kaynak
                   </label>
                   <input
                     type="text"
@@ -527,7 +514,7 @@ const ApplicationDetailPage = () => {
               {violationData.visualLink && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700">
-                    Visual Link
+                    Görsel Link
                   </label>
                   <input
                     type="text"
@@ -545,7 +532,7 @@ const ApplicationDetailPage = () => {
                   onClick={handleUpdateViolation} // Veriyi kaydetmek için
                   className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
                 >
-                  Save Violation Details
+                  Hak İhlali Verilerini Kaydet
                 </button>
               </div>
             </div>

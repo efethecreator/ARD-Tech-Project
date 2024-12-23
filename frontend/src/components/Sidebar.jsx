@@ -22,11 +22,10 @@ const Sidebar = ({ setSidebarOpen, role }) => {
   };
 
   const menuItems = role === "admin" ? [
-    { name: "Dashboard", path: "/", icon: <FontAwesomeIcon icon={faHome} /> },
+    { name: "Anasayfa", path: "/", icon: <FontAwesomeIcon icon={faHome} /> },
     { name: "Başvurular", path: "/applications", icon: <FontAwesomeIcon icon={faClipboardList} /> },
     { name: "Avukatlar", path: "/users", icon: <FontAwesomeIcon icon={faGavel} /> },
     { name: "Davalar", path: "/cases", icon: <FontAwesomeIcon icon={faEye} /> },
-    { name: "Hak İhlali İzleme", path: "/media-tracking", icon: <FontAwesomeIcon icon={faEye} /> },
   ] : [
     { name: "Davalar", path: "/cases", icon: <FontAwesomeIcon icon={faEye} /> },
   ];

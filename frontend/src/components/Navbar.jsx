@@ -14,7 +14,7 @@ const Navbar = () => {
 
   return (
     <div className="bg-primary text-secondary-dark shadow-md p-4 flex justify-between items-center">
-      <div className="text-lg font-semibold">Dashboard</div>
+      <div className="text-lg font-semibold">Yönetim Paneli</div>
       <div className="flex items-center space-x-4">
         {/* Kullanıcı Bilgileri */}
         <div className="flex items-center">

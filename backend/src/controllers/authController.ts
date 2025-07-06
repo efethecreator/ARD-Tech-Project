@@ -3,7 +3,6 @@ import User from "../models/user.model";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
-// Environment variables
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
 export const createUser = async (req: Request, res: Response) => {
@@ -88,7 +87,7 @@ export const login = async (req: Request, res: Response) => {
       message: "Login successful",
       token,
       userRole: user.userRole,
-      userId: user._id, // User ID'yi de döndürüyoruz
+      userId: user._id, 
     });
   } catch (error) {
     res.status(500).json({ message: "Error logging in", error });

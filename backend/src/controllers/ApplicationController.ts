@@ -1,7 +1,7 @@
 import { Request, Response, RequestHandler } from "express";
 import { v4 as uuidv4 } from "uuid";
 import ApplicationService from "../services/ApplicationService";
-import { uploadFileS3 } from "../services/aws3service"; // Assuming this is the path to your S3 upload function
+import { uploadFileS3 } from "../services/aws3service"; 
 
 class ApplicationController {
   createApplication: RequestHandler = async (
@@ -16,19 +16,15 @@ class ApplicationController {
         return;
       }
 
-      // Generate a unique file key
       const fileKey = `citizen-applications/${uuidv4()}-${file.originalname}`;
 
-      // Upload file to S3 and retrieve the uploaded file key
       const { fileKey: uploadedFileKey } = await uploadFileS3(fileKey, file);
 
-      // Append file information to formData
       formData.files = {
         fileKey: uploadedFileKey,
         description: "File uploaded for application",
       };
 
-      // Save application with file information
       const savedApplication = await ApplicationService.createApplication(
         formData
       );
@@ -226,7 +222,6 @@ class ApplicationController {
       res.status(500).json({ message: error.message });
     }
   };
-
 }
 
 export default new ApplicationController();

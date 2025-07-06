@@ -5,21 +5,16 @@ import CaseModel from "../models/caseModel";
 
 const router = Router();
 
-// Dashboard verileri için endpoint
 router.get("/counts", async (req, res) => {
   try {
-    // Toplam başvuru sayısını al
     const applicationsCount = await ApplicationModel.countDocuments();
 
-    // userRole: 'lawyer' olan kullanıcıları filtrele ve sayısını al
     const usersCount = await UserModel.countDocuments({
       userRole: { $in: ["admin", "lawyer"] }
     })
 
-    // Toplam dava sayısını al
     const casesCount = await CaseModel.countDocuments();
 
-    // JSON formatında cevap döndür
     res.json({
       applications: applicationsCount,
       users: usersCount,

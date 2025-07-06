@@ -18,7 +18,7 @@ const UserSchema: Schema = new Schema({
     type: String,
     required: [true, "TCNumber is required"],
     unique: true,
-  }, // Burada required ve unique kullanıyoruz
+  }, 
   userRole: { type: String, required: true },
   authentication: {
     password: { type: String, required: true, select: false },

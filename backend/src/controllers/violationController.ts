@@ -14,14 +14,12 @@ export default class ViolationController {
 
   static async getViolations(req: Request, res: Response) {
     try {
-      const { caseId } = req.query; // `caseId` query parametresi alınır
+      const { caseId } = req.query; 
 
       let violations;
       if (caseId) {
-        // Eğer caseId varsa, sadece o dava ile ilişkili hak ihlalleri döndür
         violations = await violationModel.find({ commissionCase: caseId });
       } else {
-        // caseId yoksa, tüm hak ihlallerini döndür
         violations = await violationModel.find();
       }
 

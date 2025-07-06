@@ -6,6 +6,6 @@ const router = Router();
 
 router.post("/register", createUser);
 router.post("/login", login);
-router.post("/logout", logout); // Add this line for logout
+router.post("/logout", logout); 
 
 export default router;

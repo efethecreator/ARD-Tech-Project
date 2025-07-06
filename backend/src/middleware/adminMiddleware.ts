@@ -8,10 +8,10 @@ export const isAuthenticatedAdmin = async (
   next: express.NextFunction
 ) => {
   try {
-    const token = req.cookies["jwt"]; // Token'ı cookie'den alıyoruz
+    const token = req.cookies["jwt"]; 
 
     if (!token) {
-      res.status(403).json({ message: "No token provided" }); // Token eksik
+      res.status(403).json({ message: "No token provided" }); 
       return;
     }
 
@@ -25,10 +25,9 @@ export const isAuthenticatedAdmin = async (
       userRole: string;
     };
 
-    // Kullanıcı var mı kontrol et
     const existingUser = await getUserByTcNumber(decoded.TCNumber);
     if (!existingUser || decoded.userRole !== "admin") {
-      res.status(401).json({ message: "Unauthorized" }); // Kullanıcı yok veya kullanıcı tipi uygun değil
+      res.status(401).json({ message: "Unauthorized" }); 
       return;
     }
 
@@ -37,10 +36,10 @@ export const isAuthenticatedAdmin = async (
       userType: decoded.userRole,
     };
 
-    next(); // Kullanıcı doğrulandı, devam et
+    next(); 
   } catch (error) {
     console.error(error);
-    res.sendStatus(400); // Geçersiz token veya başka bir hata
+    res.sendStatus(400);
     return;
   }
 };
